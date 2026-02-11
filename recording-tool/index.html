@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hmong Translation Project - Recording Tool</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-bg: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 1.5rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar h1 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .speaker-badge {
+            background: var(--primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .speaker-badge strong {
+            display: block;
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-bottom: 0.1rem;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            padding-left: 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 0.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: rgba(255,255,255,0.2);
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        .main {
+            flex: 1;
+            margin-left: 220px;
+            padding: 1.5rem;
+            max-width: 1000px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .stat-card.success .stat-value { color: var(--success); }
+        .stat-card.warning .stat-value { color: var(--warning); }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: var(--border);
+            border-radius: 4px;
+            height: 8px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .progress-fill.success { background: var(--success); }
+
+        /* Checklist */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #f1f5f9;
+        }
+
+        .checklist-item.completed {
+            background: #f0fdf4;
+        }
+
+        .checklist-item.current {
+            background: #eff6ff;
+            border: 2px solid var(--primary);
+        }
+
+        .checklist-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .checklist-item.completed .checklist-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .checklist-title {
+            font-weight: 500;
+        }
+
+        .checklist-item.completed .checklist-title {
+            color: var(--text-light);
+        }
+
+        .checklist-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Calendar */
+        .mini-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            font-size: 0.75rem;
+        }
+
+        .mini-calendar-header {
+            text-align: center;
+            padding: 0.25rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .mini-calendar-day {
+            text-align: center;
+            padding: 0.35rem;
+            border-radius: 4px;
+        }
+
+        .mini-calendar-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .mini-calendar-day.has-event {
+            background: #fef3c7;
+        }
+
+        .mini-calendar-day.other-month {
+            color: var(--border);
+        }
+
+        /* Events List */
+        .event-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-left: 3px solid var(--primary);
+            background: #f8fafc;
+            margin-bottom: 0.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .event-item.deadline {
+            border-left-color: var(--danger);
+        }
+
+        .event-date {
+            text-align: center;
+            min-width: 40px;
+        }
+
+        .event-date-day {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .event-date-month {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .event-content {
+            flex: 1;
+        }
+
+        .event-title {
+            font-weight: 500;
+        }
+
+        .event-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Recording Area */
+        .recording-area {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .prompt-display {
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .prompt-hmong {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .prompt-english {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .prompt-category {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .phrase-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-family: 'SF Mono', Monaco, monospace;
+            color: var(--text-light);
+            margin: 0.5rem 0;
+        }
+
+        .record-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            margin: 0.75rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .record-btn.btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .record-btn.recording {
+            background: var(--danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .recording-status {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0.5rem 0;
+            min-height: 1.5rem;
+        }
+
+        .recording-status.active {
+            color: var(--danger);
+        }
+
+        .audio-preview {
+            width: 100%;
+            max-width: 400px;
+            margin: 0.75rem auto;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        /* Buttons */
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-flag {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .btn-flag:hover {
+            background: #fde68a;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .btn-edit:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .category-card {
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .category-card.active {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .category-card.completed {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-progress {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+            font-size: 0.875rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal.modal-lg {
+            max-width: 550px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .original-text {
+            background: #f1f5f9;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Recordings List */
+        .recordings-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .recording-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem;
+            border-bottom: 1px solid var(--border);
+            gap: 0.75rem;
+        }
+
+        .recording-item:last-child {
+            border-bottom: none;
+        }
+
+        .recording-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recording-phrase {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recording-meta {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* Correction Items */
+        .correction-item {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .correction-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .correction-original {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .correction-new {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        /* Setup Screen */
+        .setup-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .setup-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .setup-card h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .setup-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Grid helpers */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Terms of Service Screen -->
+    <div id="tos-screen" class="setup-screen">
+        <div class="setup-card" style="max-width: 650px;">
+            <h1>Hmong Translation Project</h1>
+            <p class="setup-subtitle">Terms of Service & Consent Agreement</p>
+
+            <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: #f8fafc; text-align: left; font-size: 0.9rem; line-height: 1.6;">
+                <h3 style="margin-bottom: 0.5rem;">Purpose of This Project</h3>
+                <p style="margin-bottom: 1rem;">
+                    This project collects Hmong language audio recordings to build speech-to-speech translation technology
+                    for the Hmong community. Your contributions will help create tools that preserve and promote the Hmong language.
+                </p>
+
+                <h3 style="margin-bottom: 0.5rem;">What We Collect</h3>
+                <ul style="margin-left: 1.25rem; margin-bottom: 1rem;">
+                    <li>Audio recordings of your voice speaking Hmong</li>
+                    <li>Text transcriptions and translations you provide</li>
+                    <li>Basic demographic information (name, dialect, age range, location)</li>
+                    <li>Metadata about recordings (date, duration, category)</li>
+                </ul>
+
+                <h3 style="margin-bottom: 0.5rem;">How Your Recordings Will Be Used</h3>
+                <ul style="margin-left: 1.25rem; margin-bottom: 1rem;">
+                    <li><strong>Training AI models:</strong> Your recordings will be used to train speech recognition and translation systems</li>
+                    <li><strong>Public listening:</strong> Stories and recordings may be made available in the app for others to listen to, helping preserve Hmong oral traditions</li>
+                    <li><strong>Research:</strong> Recordings may be used for linguistic research to benefit the Hmong community</li>
+                    <li><strong>Attribution:</strong> You may be credited as a contributor (by name or anonymously, your choice)</li>
+                </ul>
+
+                <h3 style="margin-bottom: 0.5rem;">Data Preservation & Your Rights</h3>
+                <ul style="margin-left: 1.25rem; margin-bottom: 1rem;">
+                    <li><strong>Preservation:</strong> Your recordings will be preserved indefinitely as part of this language preservation effort, unless you request removal</li>
+                    <li><strong>Right to withdraw:</strong> You may request deletion of your recordings at any time by contacting the project coordinator</li>
+                    <li><strong>Right to privacy:</strong> You may request that your recordings not be made publicly available for listening</li>
+                    <li><strong>No compensation:</strong> This is a volunteer contribution; no payment is provided</li>
+                </ul>
+
+                <h3 style="margin-bottom: 0.5rem;">License Grant</h3>
+                <p style="margin-bottom: 1rem;">
+                    By contributing, you grant the Hmong Translation Project a perpetual, worldwide, royalty-free license to use,
+                    reproduce, modify, and distribute your recordings for the purposes described above. You retain ownership of
+                    your personal stories and experiences.
+                </p>
+
+                <h3 style="margin-bottom: 0.5rem;">Privacy & Security</h3>
+                <ul style="margin-left: 1.25rem; margin-bottom: 1rem;">
+                    <li>Your personal contact information will not be shared publicly</li>
+                    <li>Recordings are stored securely and access is limited to project team members</li>
+                    <li>We will not sell your data to third parties</li>
+                </ul>
+
+                <h3 style="margin-bottom: 0.5rem;">Age Requirement</h3>
+                <p style="margin-bottom: 1rem;">
+                    You must be 18 years or older to participate. If you are recording a minor, you must be their parent or legal guardian.
+                </p>
+
+                <h3 style="margin-bottom: 0.5rem;">Contact</h3>
+                <p>
+                    For questions, concerns, or to request removal of your recordings, contact the project coordinator at:
+                    <strong>[coordinator email/phone]</strong>
+                </p>
+            </div>
+
+            <div style="background: #eff6ff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="tos-agree" style="margin-top: 0.25rem; width: 18px; height: 18px;">
+                    <span style="font-size: 0.95rem;">
+                        I have read and agree to the Terms of Service. I understand my recordings may be preserved and made
+                        available for listening in the app, and I consent to this use.
+                    </span>
+                </label>
+            </div>
+
+            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="tos-stories-public" checked style="margin-top: 0.25rem; width: 18px; height: 18px;">
+                    <span style="font-size: 0.95rem;">
+                        I allow my stories and free recordings to be made available for public listening (you can opt out of this while still contributing)
+                    </span>
+                </label>
+            </div>
+
+            <button class="btn-primary" onclick="acceptTOS()" style="width: 100%; padding: 0.75rem; font-size: 1rem;">
+                I Agree - Continue to Registration
+            </button>
+        </div>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen" class="setup-screen hidden">
+        <div class="setup-card">
+            <h1>Hmong Translation Project</h1>
+            <p class="setup-subtitle">Speaker Registration</p>
+
+            <div class="form-group">
+                <label for="speaker-name">Your Name *</label>
+                <input type="text" id="speaker-name" placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label for="speaker-id">Speaker ID (from coordinator)</label>
+                <input type="text" id="speaker-id" placeholder="e.g., speaker_001">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="dialect">Dialect *</label>
+                    <select id="dialect">
+                        <option value="">Select...</option>
+                        <option value="white_hmong">White Hmong</option>
+                        <option value="green_hmong">Green Hmong</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="age-range">Age Range</label>
+                    <select id="age-range">
+                        <option value="">Select...</option>
+                        <option value="18-25">18-25</option>
+                        <option value="26-35">26-35</option>
+                        <option value="36-45">36-45</option>
+                        <option value="46-55">46-55</option>
+                        <option value="56-65">56-65</option>
+                        <option value="65+">65+</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="origin">Where is your family from?</label>
+                <input type="text" id="origin" placeholder="e.g., Laos, Thailand, Vietnam">
+            </div>
+
+            <div class="form-group">
+                <label for="current-location">Current Location</label>
+                <input type="text" id="current-location" placeholder="e.g., Fresno, CA">
+            </div>
+
+            <button class="btn-primary" onclick="startSession()" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 0.5rem;">
+                Start Recording Session
+            </button>
+
+            <button class="btn-secondary" onclick="showTOS()" style="width: 100%; margin-top: 0.5rem;">
+                Review Terms of Service
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="app hidden">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>Hmong Translation</h1>
+                <p class="sidebar-subtitle">Recording Tool</p>
+                <div class="speaker-badge">
+                    <strong>SPEAKER</strong>
+                    <span id="sidebar-speaker-name"></span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a class="nav-item active" onclick="showPage('home')">
+                    <span>Home</span>
+                </a>
+                <a class="nav-item" onclick="showPage('progress')">
+                    <span>My Progress</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Recording</div>
+                <a class="nav-item" onclick="showPage('record')">
+                    <span>Phrases</span>
+                </a>
+                <a class="nav-item" onclick="showPage('reading')">
+                    <span>Book Reading</span>
+                </a>
+                <a class="nav-item" onclick="showPage('stories')">
+                    <span>Story Telling</span>
+                </a>
+                <a class="nav-item" onclick="showPage('free')">
+                    <span>Free Recording</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Review</div>
+                <a class="nav-item" onclick="showPage('recordings')">
+                    <span>My Recordings</span>
+                    <span class="badge" id="nav-recordings-count">0</span>
+                </a>
+                <a class="nav-item" onclick="showPage('corrections')">
+                    <span>Corrections</span>
+                    <span class="badge" id="nav-corrections-count">0</span>
+                </a>
+                <a class="nav-item" onclick="showPage('export')">
+                    <span>Export</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Home Page -->
+            <div id="home-page" class="page active">
+                <div class="page-header">
+                    <h2>Welcome back!</h2>
+                    <p>Here's your recording progress overview.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-sessions">0/5</div>
+                        <div class="stat-label">Sessions Complete</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value" id="stat-recordings">0</div>
+                        <div class="stat-label">Recordings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-duration">0:00</div>
+                        <div class="stat-label">Total Time</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" id="stat-corrections">0</div>
+                        <div class="stat-label">Corrections</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-phrases">475</div>
+                        <div class="stat-label">Total Phrases</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Session Checklist</h3>
+                        <div id="session-checklist"></div>
+                        <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="showPage('record')">
+                            Continue Recording
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Upcoming</h3>
+                        <div id="upcoming-events">
+                            <div class="empty-state" style="padding: 1rem;">
+                                <p>No scheduled events</p>
+                                <button class="btn-secondary btn-sm" style="margin-top: 0.5rem;" onclick="showPage('calendar')">
+                                    Add Event
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>What You'll Record</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">Complete all sections to help build the translation model:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                        <div style="background: #eff6ff; padding: 0.75rem; border-radius: 8px; border-left: 3px solid var(--primary);">
+                            <strong style="color: var(--primary);">Phrases</strong>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">475 phrases across everyday, medical, legal topics</div>
+                        </div>
+                        <div style="background: #f0fdf4; padding: 0.75rem; border-radius: 8px; border-left: 3px solid var(--success);">
+                            <strong style="color: var(--success);">Book Reading</strong>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">30+ minutes reading aloud from books/texts</div>
+                        </div>
+                        <div style="background: #fefce8; padding: 0.75rem; border-radius: 8px; border-left: 3px solid var(--warning);">
+                            <strong style="color: var(--warning);">Story Telling</strong>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">5+ stories about family, traditions, memories</div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 8px; border-left: 3px solid var(--text-light);">
+                            <strong>Free Recording</strong>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">Conversations, songs, anything else</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Quick Tips</h3>
+                    <ul style="margin-left: 1.25rem; color: var(--text-light);">
+                        <li>Find a quiet room before recording</li>
+                        <li>Wait 1 second before and after speaking</li>
+                        <li>Use "Flag Issue" if a phrase seems wrong</li>
+                        <li>Export your recordings when done for the day</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Progress Page -->
+            <div id="progress-page" class="page">
+                <div class="page-header">
+                    <h2>My Progress</h2>
+                    <p>Track your recording sessions and overall progress.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Overall Progress</h3>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="flex: 1;">
+                            <div class="progress-bar" style="height: 12px;">
+                                <div class="progress-fill success" id="overall-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div id="overall-progress-text" style="font-weight: 600;">0%</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Session Details</h3>
+                    <div id="session-details-list"></div>
+                </div>
+
+                <div class="card">
+                    <h3>My Calendar</h3>
+                    <div class="mini-calendar" id="mini-calendar"></div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn-secondary btn-sm" onclick="addPersonalEvent()">+ Add Reminder</button>
+                    </div>
+                    <div id="calendar-events" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+
+            <!-- Record Phrases Page -->
+            <div id="record-page" class="page">
+                <div class="page-header">
+                    <h2>Record Phrases</h2>
+                    <p>Select a category and start recording.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Select Category</h3>
+                    <div class="category-grid" id="category-grid"></div>
+                </div>
+
+            </div>
+
+            <!-- Book Reading Page -->
+            <div id="reading-page" class="page">
+                <div class="page-header">
+                    <h2>Book Reading</h2>
+                    <p>Read passages aloud in Hmong. This helps train the model on clear, formal speech.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Why Book Reading?</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Reading aloud provides clear, well-paced speech that helps the translation model learn pronunciation and sentence structure.
+                        Read any Hmong text you have - children's books, religious texts, news articles, or the passages below.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Select a Passage or Use Your Own</h3>
+                    <div class="form-group">
+                        <label for="reading-source">Reading Source</label>
+                        <select id="reading-source" onchange="updateReadingPrompt()">
+                            <option value="custom">My own book/text</option>
+                            <option value="folktale">Hmong Folktale Excerpt</option>
+                            <option value="news">News-style Text</option>
+                            <option value="instructions">Instructions/How-to</option>
+                            <option value="letter">Letter/Correspondence</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reading-title">Title of What You're Reading</label>
+                        <input type="text" id="reading-title" placeholder="e.g., Ntxhais Nkauj Zuag Paj, Chapter 1">
+                    </div>
+
+                    <div id="reading-prompt" class="prompt-display" style="margin: 1rem 0; min-height: 100px;">
+                        <p style="color: var(--text-light); text-align: center;">Select a source above or read from your own book</p>
+                    </div>
+
+                    <div class="recording-area">
+                        <div class="timer" id="reading-timer">0:00</div>
+                        <button class="record-btn btn-primary" id="reading-record-btn" onclick="toggleReadingRecording()">
+                            <span id="reading-record-btn-text">Start Recording</span>
+                        </button>
+                        <audio id="reading-audio-preview" class="audio-preview hidden" controls></audio>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reading-text">Text You Read (paste or type)</label>
+                        <textarea id="reading-text" rows="4" placeholder="Paste or type the Hmong text you read..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="saveReadingRecording()" style="width: 100%;">
+                        Save Reading
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Reading Goals</h3>
+                    <ul style="margin-left: 1.25rem; color: var(--text-light);">
+                        <li>Record at least <strong>30 minutes</strong> of reading across all sessions</li>
+                        <li>Vary your reading material (stories, news, instructions)</li>
+                        <li>Read at a natural, comfortable pace</li>
+                        <li>It's okay to make mistakes - just keep reading</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Story Telling Page -->
+            <div id="stories-page" class="page">
+                <div class="page-header">
+                    <h2>Story Telling</h2>
+                    <p>Tell stories in your own words. This helps train natural, spontaneous speech.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Why Story Telling?</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Natural speech is different from reading or repeating phrases. Telling stories helps the model learn
+                        how people actually talk - with pauses, filler words, and natural rhythm. Speak freely and naturally!
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Choose a Story Topic</h3>
+                    <div class="form-group">
+                        <label for="story-topic">Topic Prompt</label>
+                        <select id="story-topic" onchange="updateStoryPrompt()">
+                            <option value="childhood">A memory from your childhood</option>
+                            <option value="family">A story about your family</option>
+                            <option value="tradition">A Hmong tradition or celebration</option>
+                            <option value="journey">Your journey to where you live now</option>
+                            <option value="funny">A funny thing that happened to you</option>
+                            <option value="cooking">How to cook a favorite dish</option>
+                            <option value="folktale">A folktale or legend you know</option>
+                            <option value="daily">What you did yesterday</option>
+                            <option value="dream">A dream or goal you have</option>
+                            <option value="custom">My own topic</option>
+                        </select>
+                    </div>
+
+                    <div id="story-prompt" class="prompt-display" style="margin: 1rem 0;">
+                        <div class="prompt-english" style="font-size: 1.1rem;">Tell us about a memory from your childhood.</div>
+                        <div style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.5rem;">
+                            Speak naturally in Hmong. Take your time. 2-5 minutes is perfect.
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="custom-topic-group" style="display: none;">
+                        <label for="story-custom-topic">Your Topic</label>
+                        <input type="text" id="story-custom-topic" placeholder="What will you talk about?">
+                    </div>
+
+                    <div class="recording-area">
+                        <div class="timer" id="story-timer">0:00</div>
+                        <button class="record-btn btn-primary" id="story-record-btn" onclick="toggleStoryRecording()">
+                            <span id="story-record-btn-text">Start Recording</span>
+                        </button>
+                        <audio id="story-audio-preview" class="audio-preview hidden" controls></audio>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="story-summary">Brief Summary (English, optional)</label>
+                        <textarea id="story-summary" rows="2" placeholder="A short summary of what you talked about..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="saveStoryRecording()" style="width: 100%;">
+                        Save Story
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Story Telling Goals</h3>
+                    <ul style="margin-left: 1.25rem; color: var(--text-light);">
+                        <li>Record at least <strong>5 stories</strong> (2-5 minutes each)</li>
+                        <li>Cover different topics</li>
+                        <li>Speak naturally - pauses and "um"s are okay!</li>
+                        <li>Don't read from a script - just talk</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Free Recording Page -->
+            <div id="free-page" class="page">
+                <div class="page-header">
+                    <h2>Free Recording</h2>
+                    <p>Record anything else - conversations, songs, or additional content.</p>
+                </div>
+
+                <div class="card">
+                    <div class="form-group">
+                        <label for="free-type">Recording Type</label>
+                        <select id="free-type">
+                            <option value="story">Personal Story</option>
+                            <option value="conversation">Conversation</option>
+                            <option value="description">Description (daily routine, recipe, etc.)</option>
+                            <option value="translation">Translation Task</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="free-title">Title / Description</label>
+                        <input type="text" id="free-title" placeholder="e.g., My childhood in Laos">
+                    </div>
+
+                    <div class="recording-area">
+                        <div class="timer" id="free-timer">0:00</div>
+                        <button class="record-btn btn-primary" id="free-record-btn" onclick="toggleFreeRecording()">
+                            <span id="free-record-btn-text">Start</span>
+                        </button>
+                        <audio id="free-audio-preview" class="audio-preview hidden" controls></audio>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="free-hmong-text">Hmong Text (transcription)</label>
+                        <textarea id="free-hmong-text" rows="3" placeholder="Type what you said in Hmong..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="free-english-text">English Translation</label>
+                        <textarea id="free-english-text" rows="3" placeholder="English translation..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="saveFreeRecording()" style="width: 100%;">
+                        Save Recording
+                    </button>
+                </div>
+            </div>
+
+            <!-- My Recordings Page -->
+            <div id="recordings-page" class="page">
+                <div class="page-header">
+                    <h2>My Recordings</h2>
+                    <p>Review and manage your recordings.</p>
+                </div>
+
+                <div class="card">
+                    <div class="recordings-list" id="recordings-list">
+                        <div class="empty-state">No recordings yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corrections Page -->
+            <div id="corrections-page" class="page">
+                <div class="page-header">
+                    <h2>Phrase Corrections</h2>
+                    <p>Your submitted corrections and flags.</p>
+                </div>
+
+                <div class="card">
+                    <div id="corrections-list">
+                        <div class="empty-state">
+                            No corrections yet. Use "Flag Issue" or "Edit Phrase" while recording to suggest changes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Page -->
+            <div id="export-page" class="page">
+                <div class="page-header">
+                    <h2>Export Recordings</h2>
+                    <p>Download your recordings to send to the coordinator.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="export-recordings">0</div>
+                        <div class="stat-label">Recordings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="export-duration">0:00</div>
+                        <div class="stat-label">Total Duration</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="export-corrections">0</div>
+                        <div class="stat-label">Corrections</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Download</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        This will create a ZIP file containing all your audio recordings,
+                        transcriptions, and phrase corrections.
+                    </p>
+                    <button class="btn-success" onclick="exportRecordings()" style="width: 100%; padding: 0.75rem; font-size: 1rem;">
+                        Download All Recordings
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>What's Included</h3>
+                    <ul style="margin-left: 1.25rem; color: var(--text-light);">
+                        <li>All audio recordings (.webm files)</li>
+                        <li>metadata.json with all phrase data</li>
+                        <li>Your phrase corrections and flags</li>
+                        <li>Transcriptions for free recordings</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Your Consent & Privacy</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                            <span>Terms of Service</span>
+                            <span id="consent-tos-status" style="color: var(--success); font-weight: 500;">Accepted</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+                            <span>Accepted Date</span>
+                            <span id="consent-date" style="color: var(--text-light);">-</span>
+                        </div>
+                    </div>
+
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.75rem; background: #f8fafc; border-radius: 8px;">
+                        <input type="checkbox" id="consent-public-toggle" onchange="updatePublicConsent()" style="width: 18px; height: 18px;">
+                        <span>Allow my stories/readings to be available for public listening</span>
+                    </label>
+
+                    <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 1rem;">
+                        To request removal of your recordings or withdraw consent entirely, please contact the project coordinator.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="modal-overlay hidden" id="event-modal">
+        <div class="modal">
+            <h3>Add Reminder</h3>
+            <div class="form-group">
+                <label for="event-title">Title *</label>
+                <input type="text" id="event-title" placeholder="e.g., Complete Session 2">
+            </div>
+            <div class="form-group">
+                <label for="event-date">Date *</label>
+                <input type="date" id="event-date">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="hideEventModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveEvent()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recording Modal -->
+    <div class="modal-overlay hidden" id="recording-modal" onclick="if(event.target === this) closeRecording()">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 id="current-category-title">Recording</h3>
+                <button class="modal-close" onclick="closeRecording()">&times;</button>
+            </div>
+
+            <!-- Recording View -->
+            <div id="recording-view">
+                <div class="progress-bar" style="margin-bottom: 0.25rem;">
+                    <div class="progress-fill" id="phrase-progress"></div>
+                </div>
+                <div style="text-align: center; font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;" id="phrase-progress-text">0 / 0</div>
+
+                <div class="recording-area">
+                    <div class="prompt-display">
+                        <div class="prompt-category" id="prompt-category"></div>
+                        <div class="prompt-hmong" id="prompt-hmong">Select a category to begin</div>
+                        <div class="prompt-english" id="prompt-english"></div>
+                        <div class="phrase-actions" id="phrase-actions" style="display: none;">
+                            <button class="btn-flag btn-sm" onclick="showFlagView()">Flag Issue</button>
+                            <button class="btn-edit btn-sm" onclick="showEditView()">Edit Phrase</button>
+                        </div>
+                    </div>
+
+                    <div class="timer" id="timer">0:00</div>
+
+                    <button class="record-btn btn-primary" id="record-btn" onclick="toggleRecording()">
+                        <span id="record-btn-text">Start Recording</span>
+                    </button>
+
+                    <div class="recording-status" id="recording-status"></div>
+
+                    <audio id="audio-preview" class="audio-preview hidden" controls></audio>
+
+                    <div class="nav-buttons">
+                        <button class="btn-secondary" onclick="skipPhrase()">Skip</button>
+                        <button class="btn-primary" id="save-btn" onclick="saveAndNext()" disabled>Save & Next</button>
+                        <button class="btn-secondary" onclick="reRecord()">Re-record</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit View (inline) -->
+            <div id="edit-view" class="hidden">
+                <h4 style="margin-bottom: 1rem; color: var(--text-light);">Edit Phrase</h4>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1rem;">
+                    Suggest a correction for this phrase.
+                </p>
+                <div class="form-group">
+                    <label>Original:</label>
+                    <div class="original-text">
+                        <div id="edit-original-hmong"></div>
+                        <div id="edit-original-english" style="font-size: 0.85rem; color: var(--text-light);"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-new-hmong">Corrected Hmong</label>
+                    <input type="text" id="edit-new-hmong">
+                </div>
+                <div class="form-group">
+                    <label for="edit-new-english">Corrected English</label>
+                    <input type="text" id="edit-new-english">
+                </div>
+                <div class="form-group">
+                    <label for="edit-reason">Reason for change</label>
+                    <textarea id="edit-reason" rows="2" placeholder="e.g., Different spelling in my dialect"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="showRecordingView()">Cancel</button>
+                    <button class="btn-primary" onclick="saveCorrection()">Save Correction</button>
+                </div>
+            </div>
+
+            <!-- Flag View (inline) -->
+            <div id="flag-view" class="hidden">
+                <h4 style="margin-bottom: 1rem; color: var(--text-light);">Flag Issue</h4>
+                <div class="form-group">
+                    <label>Phrase:</label>
+                    <div class="original-text" id="flag-phrase"></div>
+                </div>
+                <div class="form-group">
+                    <label for="flag-issue">Issue Type</label>
+                    <select id="flag-issue">
+                        <option value="incorrect_hmong">Hmong is incorrect</option>
+                        <option value="incorrect_english">English is wrong</option>
+                        <option value="dialect_difference">Different in my dialect</option>
+                        <option value="uncommon">Phrase is uncommon</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="flag-notes">Notes (optional)</label>
+                    <textarea id="flag-notes" rows="2" placeholder="Describe the issue..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="showRecordingView()">Cancel</button>
+                    <button class="btn-flag" onclick="saveFlag()">Submit Flag</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        // ========== STATE ==========
+        let speakerInfo = {};
+        let recordings = [];
+        let corrections = [];
+        let events = [];
+        let categoryProgress = {};
+        let consentInfo = {
+            tosAccepted: false,
+            tosAcceptedDate: null,
+            allowPublicStories: true
+        };
+
+        // ========== TOS FUNCTIONS ==========
+        function acceptTOS() {
+            const agreed = document.getElementById('tos-agree').checked;
+            if (!agreed) {
+                alert('Please read and agree to the Terms of Service to continue.');
+                return;
+            }
+
+            consentInfo = {
+                tosAccepted: true,
+                tosAcceptedDate: new Date().toISOString(),
+                allowPublicStories: document.getElementById('tos-stories-public').checked
+            };
+
+            // Save consent to localStorage
+            localStorage.setItem('hmong-project-consent', JSON.stringify(consentInfo));
+
+            document.getElementById('tos-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+
+        function showTOS() {
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('tos-screen').classList.remove('hidden');
+        }
+
+        // Check for existing consent on page load
+        (function checkExistingConsent() {
+            const savedConsent = localStorage.getItem('hmong-project-consent');
+            if (savedConsent) {
+                consentInfo = JSON.parse(savedConsent);
+                if (consentInfo.tosAccepted) {
+                    document.getElementById('tos-screen').classList.add('hidden');
+                    document.getElementById('setup-screen').classList.remove('hidden');
+                }
+            }
+        })();
+
+        // Recording state
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordingStartTime = null;
+        let timerInterval = null;
+        let currentAudioBlob = null;
+
+        // Free recording state
+        let freeMediaRecorder = null;
+        let freeAudioChunks = [];
+        let isFreeRecording = false;
+        let freeRecordingStartTime = null;
+        let freeTimerInterval = null;
+        let currentFreeAudioBlob = null;
+
+        // Phrase navigation
+        let currentCategory = null;
+        let currentPhraseIndex = 0;
+        let categoryPhrases = [];
+
+        // Session definitions
+        const sessions = [
+            { id: 1, name: 'Session 1: Everyday Phrases', categories: ['greetings', 'introductions', 'family', 'questions', 'common_responses'] },
+            { id: 2, name: 'Session 2: Daily Life', categories: ['time_expressions', 'directions_locations', 'daily_activities', 'food_drink', 'weather', 'shopping', 'emotions_states'] },
+            { id: 3, name: 'Session 3: Medical', categories: ['body_parts', 'symptoms', 'chronic_conditions', 'doctor_questions', 'doctor_instructions', 'patient_questions', 'appointments', 'pharmacy'] },
+            { id: 4, name: 'Session 4: Emergency & Legal + Stories', categories: ['urgent_phrases', 'location_emergency', 'medical_emergency', 'rights', 'court', 'immigration'], extras: ['2 stories'] },
+            { id: 5, name: 'Session 5: Numbers + Reading + Stories', categories: ['cardinal', 'ordinal', 'time_numbers', 'money'], extras: ['15 min reading', '3 stories'] }
+        ];
+
+        // ========== PHRASES DATA ==========
+        const phrases = {"everyday":{"greetings":[{"hmong":"Nyob zoo","english":"Hello"},{"hmong":"Nyob zoo sawv ntxov","english":"Good morning"},{"hmong":"Nyob zoo tav su","english":"Good afternoon"},{"hmong":"Nyob zoo tsaus ntuj","english":"Good evening"},{"hmong":"Koj nyob li cas?","english":"How are you?"},{"hmong":"Kuv nyob zoo","english":"I am fine"},{"hmong":"Kuv nyob zoo heev","english":"I am very well"},{"hmong":"Kuv nyob tsis zoo","english":"I am not well"},{"hmong":"Ua tsaug","english":"Thank you"},{"hmong":"Ua tsaug ntau","english":"Thank you very much"},{"hmong":"Tsis ua li cas","english":"You're welcome"},{"hmong":"Thov txim","english":"Excuse me / Sorry"},{"hmong":"Tsis txhob ua li cas","english":"No problem"},{"hmong":"Sib ntsib dua","english":"See you again"},{"hmong":"Mus zoo","english":"Goodbye (to person leaving)"},{"hmong":"Nyob zoo","english":"Goodbye (to person staying)"},{"hmong":"Hmo no zoo","english":"Good night"},{"hmong":"Zoo siab ntsib koj","english":"Nice to meet you"},{"hmong":"Kuv zoo siab heev","english":"I am very happy"},{"hmong":"Koj tuaj qhov twg tuaj?","english":"Where are you from?"}],"introductions":[{"hmong":"Kuv lub npe hu ua...","english":"My name is..."},{"hmong":"Koj lub npe hu li cas?","english":"What is your name?"},{"hmong":"Kuv muaj... xyoo","english":"I am ... years old"},{"hmong":"Koj muaj pes tsawg xyoo?","english":"How old are you?"},{"hmong":"Kuv nyob hauv...","english":"I live in..."},{"hmong":"Koj nyob qhov twg?","english":"Where do you live?"},{"hmong":"Kuv yog Hmoob","english":"I am Hmong"},{"hmong":"Kuv hais lus Hmoob","english":"I speak Hmong"},{"hmong":"Kuv hais lus Askiv","english":"I speak English"},{"hmong":"Kuv hais lus Hmoob me ntsis","english":"I speak a little Hmong"},{"hmong":"Kuv tsis paub hais lus Askiv","english":"I don't know how to speak English"},{"hmong":"No yog kuv tsev neeg","english":"This is my family"},{"hmong":"No yog kuv niam","english":"This is my mother"},{"hmong":"No yog kuv txiv","english":"This is my father"},{"hmong":"No yog kuv tus poj niam","english":"This is my wife"},{"hmong":"No yog kuv tus txiv","english":"This is my husband"},{"hmong":"No yog kuv cov me nyuam","english":"These are my children"},{"hmong":"Kuv muaj... tus me nyuam","english":"I have ... children"},{"hmong":"Kuv ua hauj lwm ua...","english":"I work as a..."},{"hmong":"Koj ua hauj lwm dab tsi?","english":"What do you do for work?"}],"family":[{"hmong":"niam","english":"mother"},{"hmong":"txiv","english":"father"},{"hmong":"pog","english":"grandmother (paternal)"},{"hmong":"yawg","english":"grandfather (paternal)"},{"hmong":"niam tais","english":"grandmother (maternal)"},{"hmong":"yawm txiv","english":"grandfather (maternal)"},{"hmong":"tij laug","english":"older brother"},{"hmong":"kwv","english":"younger brother"},{"hmong":"niam hlob","english":"older sister"},{"hmong":"niam ntxawm","english":"younger sister"},{"hmong":"tub","english":"son"},{"hmong":"ntxhais","english":"daughter"},{"hmong":"xeeb ntxwv","english":"grandchild"},{"hmong":"tus poj niam","english":"wife"},{"hmong":"tus txiv","english":"husband"},{"hmong":"me nyuam","english":"child/children"},{"hmong":"kwv tij","english":"brothers/relatives"},{"hmong":"tsev neeg","english":"family"},{"hmong":"niam txiv","english":"parents"},{"hmong":"phauj","english":"aunt (father's sister)"}],"questions":[{"hmong":"Dab tsi?","english":"What?"},{"hmong":"Leej twg?","english":"Who?"},{"hmong":"Qhov twg?","english":"Where?"},{"hmong":"Thaum twg?","english":"When?"},{"hmong":"Vim li cas?","english":"Why?"},{"hmong":"Li cas?","english":"How?"},{"hmong":"Pes tsawg?","english":"How much/many?"},{"hmong":"Puas yog?","english":"Is it?/Right?"},{"hmong":"Koj puas paub?","english":"Do you know?"},{"hmong":"Koj puas nkag siab?","english":"Do you understand?"},{"hmong":"Kuv tsis nkag siab","english":"I don't understand"},{"hmong":"Koj hais dab tsi?","english":"What did you say?"},{"hmong":"Thov hais dua","english":"Please say it again"},{"hmong":"Thov hais qeeb zog","english":"Please speak slower"},{"hmong":"Qhov no hu li cas?","english":"What is this called?"},{"hmong":"Qhov no yog dab tsi?","english":"What is this?"},{"hmong":"Qhov ntawd yog dab tsi?","english":"What is that?"},{"hmong":"Nyob qhov twg?","english":"Where is it?"},{"hmong":"Chav dej nyob qhov twg?","english":"Where is the bathroom?"},{"hmong":"Koj xav tau dab tsi?","english":"What do you want?"}],"common_responses":[{"hmong":"Yog","english":"Yes"},{"hmong":"Tsis yog","english":"No"},{"hmong":"Zoo","english":"Good/Okay"},{"hmong":"Tsis zoo","english":"Not good"},{"hmong":"Tau","english":"Can/Able to"},{"hmong":"Tsis tau","english":"Cannot"},{"hmong":"Paub","english":"Know"},{"hmong":"Tsis paub","english":"Don't know"},{"hmong":"Muaj","english":"Have/There is"},{"hmong":"Tsis muaj","english":"Don't have/There isn't"},{"hmong":"Xav","english":"Want/Think"},{"hmong":"Tsis xav","english":"Don't want"},{"hmong":"Nyiam","english":"Like"},{"hmong":"Tsis nyiam","english":"Don't like"},{"hmong":"Nco","english":"Remember"},{"hmong":"Tsis nco","english":"Don't remember"},{"hmong":"Kuv xav li ntawd thiab","english":"I think so too"},{"hmong":"Kuv tsis paub","english":"I don't know"},{"hmong":"Tej zaum","english":"Maybe"},{"hmong":"Yeej yog li ntawd","english":"That's right"}],"time_expressions":[{"hmong":"hnub no","english":"today"},{"hmong":"nag hmo","english":"yesterday"},{"hmong":"tag kis","english":"tomorrow"},{"hmong":"tam sim no","english":"now"},{"hmong":"tom qab","english":"later/after"},{"hmong":"ua ntej","english":"before"},{"hmong":"sawv ntxov","english":"morning"},{"hmong":"tav su","english":"noon/afternoon"},{"hmong":"tsaus ntuj","english":"evening"},{"hmong":"hmo ntuj","english":"night"},{"hmong":"ib teev","english":"one hour"},{"hmong":"ib feeb","english":"one minute"},{"hmong":"ib lub lim tiam","english":"one week"},{"hmong":"ib hlis","english":"one month"},{"hmong":"ib xyoos","english":"one year"},{"hmong":"Pes tsawg teev lawm?","english":"What time is it?"},{"hmong":"thaum twg","english":"when"},{"hmong":"ntev npaum li cas","english":"how long"},{"hmong":"txhua hnub","english":"every day"},{"hmong":"txhua lub lim tiam","english":"every week"}],"directions_locations":[{"hmong":"sab laug","english":"left"},{"hmong":"sab xis","english":"right"},{"hmong":"ncaj nraim","english":"straight"},{"hmong":"tig","english":"turn"},{"hmong":"nres","english":"stop"},{"hmong":"mus","english":"go"},{"hmong":"los","english":"come"},{"hmong":"ze","english":"near"},{"hmong":"deb","english":"far"},{"hmong":"sab hauv","english":"inside"},{"hmong":"sab nrauv","english":"outside"},{"hmong":"saum","english":"above/up"},{"hmong":"hauv qab","english":"below/down"},{"hmong":"ntawm no","english":"here"},{"hmong":"ntawm ub","english":"there"},{"hmong":"tom tsev","english":"at home"},{"hmong":"tom khw","english":"at the store"},{"hmong":"tom tsev kawm ntawv","english":"at school"},{"hmong":"tom hauj lwm","english":"at work"},{"hmong":"hauv tsheb","english":"in the car"}],"daily_activities":[{"hmong":"Kuv sawv","english":"I wake up"},{"hmong":"Kuv da dej","english":"I take a shower"},{"hmong":"Kuv hnav khaub ncaws","english":"I get dressed"},{"hmong":"Kuv noj tshais","english":"I eat breakfast"},{"hmong":"Kuv noj su","english":"I eat lunch"},{"hmong":"Kuv noj hmo","english":"I eat dinner"},{"hmong":"Kuv mus ua hauj lwm","english":"I go to work"},{"hmong":"Kuv los tsev","english":"I come home"},{"hmong":"Kuv ua noj","english":"I cook"},{"hmong":"Kuv ntxuav tais diav","english":"I wash dishes"},{"hmong":"Kuv tu tsev","english":"I clean the house"},{"hmong":"Kuv ntxhua khaub ncaws","english":"I wash clothes"},{"hmong":"Kuv saib TV","english":"I watch TV"},{"hmong":"Kuv nyeem ntawv","english":"I read"},{"hmong":"Kuv pw","english":"I sleep"},{"hmong":"Kuv mus yuav khoom","english":"I go shopping"},{"hmong":"Kuv tsav tsheb","english":"I drive a car"},{"hmong":"Kuv caij npav","english":"I take the bus"},{"hmong":"Kuv taug kev","english":"I walk"},{"hmong":"Kuv tham xov tooj","english":"I talk on the phone"}],"food_drink":[{"hmong":"mov","english":"rice"},{"hmong":"zaub","english":"vegetables"},{"hmong":"nqaij","english":"meat"},{"hmong":"nqaij npuas","english":"pork"},{"hmong":"nqaij nyuj","english":"beef"},{"hmong":"nqaij qaib","english":"chicken"},{"hmong":"ntses","english":"fish"},{"hmong":"qe","english":"egg"},{"hmong":"kua txob","english":"pepper/chili"},{"hmong":"ntsev","english":"salt"},{"hmong":"dej","english":"water"},{"hmong":"kua mis","english":"milk"},{"hmong":"kas fes","english":"coffee"},{"hmong":"tshuaj yej","english":"tea"},{"hmong":"kua txiv","english":"juice"},{"hmong":"ncuav","english":"bread"},{"hmong":"txiv hmab txiv ntoo","english":"fruit"},{"hmong":"Kuv tshaib plab","english":"I am hungry"},{"hmong":"Kuv nqhis dej","english":"I am thirsty"},{"hmong":"Qab heev","english":"Very delicious"}],"weather":[{"hmong":"hnub ci","english":"sunny"},{"hmong":"los nag","english":"raining"},{"hmong":"los daus","english":"snowing"},{"hmong":"cua ntsawj","english":"windy"},{"hmong":"kub","english":"hot"},{"hmong":"no","english":"cold"},{"hmong":"sov","english":"warm"},{"hmong":"txias","english":"cool"},{"hmong":"Hnub no huab ntuj zoo li cas?","english":"How is the weather today?"},{"hmong":"Hnub no kub heev","english":"Today is very hot"},{"hmong":"Hnub no no heev","english":"Today is very cold"},{"hmong":"Tab tom los nag","english":"It is raining"},{"hmong":"Yuav los nag","english":"It will rain"},{"hmong":"huab ntuj","english":"weather/sky"},{"hmong":"tshav ntuj","english":"clear weather"}],"shopping":[{"hmong":"Qhov no nqi pes tsawg?","english":"How much does this cost?"},{"hmong":"Kim dhau lawm","english":"Too expensive"},{"hmong":"Pheej yig","english":"Cheap"},{"hmong":"Kuv xav yuav qhov no","english":"I want to buy this"},{"hmong":"Kuv tsis xav yuav","english":"I don't want to buy"},{"hmong":"Koj puas txais credit card?","english":"Do you accept credit card?"},{"hmong":"Kuv them nyiaj ntsuab","english":"I pay cash"},{"hmong":"Thov muab daim ntawv txais nyiaj","english":"Please give me the receipt"},{"hmong":"Koj puas muaj qhov loj dua?","english":"Do you have a bigger size?"},{"hmong":"Koj puas muaj xim sib txawv?","english":"Do you have different colors?"},{"hmong":"Kuv tsuas yog saib xwb","english":"I'm just looking"},{"hmong":"Qhov no zoo nkauj heev","english":"This is very beautiful"},{"hmong":"Kuv yuav qhov no","english":"I'll take this"},{"hmong":"nyiaj","english":"money"},{"hmong":"khw","english":"store/market"}],"emotions_states":[{"hmong":"zoo siab","english":"happy"},{"hmong":"tu siab","english":"sad"},{"hmong":"npau taws","english":"angry"},{"hmong":"ntshai","english":"scared/afraid"},{"hmong":"txhawj xeeb","english":"worried"},{"hmong":"nkees","english":"tired"},{"hmong":"tsaug zog","english":"sleepy"},{"hmong":"tsis xis neej","english":"uncomfortable"},{"hmong":"xav tsev","english":"homesick"},{"hmong":"kho siab","english":"lonely"},{"hmong":"Kuv zoo siab heev","english":"I am very happy"},{"hmong":"Kuv tu siab heev","english":"I am very sad"},{"hmong":"Kuv nkees heev","english":"I am very tired"},{"hmong":"Kuv ntshai","english":"I am scared"},{"hmong":"Kuv txhawj xeeb txog koj","english":"I am worried about you"}]},"medical":{"body_parts":[{"hmong":"taubhau","english":"head"},{"hmong":"plaub hau","english":"hair"},{"hmong":"ntsej muag","english":"face"},{"hmong":"qhov muag","english":"eye"},{"hmong":"qhov ntsej","english":"ear"},{"hmong":"qhov ntswg","english":"nose"},{"hmong":"qhov ncauj","english":"mouth"},{"hmong":"hniav","english":"tooth/teeth"},{"hmong":"tus nplaig","english":"tongue"},{"hmong":"caj dab","english":"neck"},{"hmong":"xub pwg","english":"shoulder"},{"hmong":"caj npab","english":"arm"},{"hmong":"luj tshib","english":"elbow"},{"hmong":"dab teg","english":"wrist"},{"hmong":"tes","english":"hand"},{"hmong":"ntiv tes","english":"finger"},{"hmong":"hauv siab","english":"chest"},{"hmong":"nrob qaum","english":"back"},{"hmong":"plab","english":"stomach"},{"hmong":"duav","english":"waist/lower back"},{"hmong":"ncej puab","english":"hip"},{"hmong":"ceg","english":"leg"},{"hmong":"hauv caug","english":"knee"},{"hmong":"pob taws","english":"ankle"},{"hmong":"ko taw","english":"foot"},{"hmong":"ntiv taw","english":"toe"},{"hmong":"tawv nqaij","english":"skin"},{"hmong":"pob txha","english":"bone"},{"hmong":"ntshav","english":"blood"},{"hmong":"lub plawv","english":"heart"}],"symptoms":[{"hmong":"Kuv mob hau","english":"I have a headache"},{"hmong":"Kuv mob plab","english":"I have a stomachache"},{"hmong":"Kuv mob nrob qaum","english":"I have back pain"},{"hmong":"Kuv mob hauv siab","english":"I have chest pain"},{"hmong":"Kuv mob caj dab","english":"I have neck pain"},{"hmong":"Kuv mob caj pas","english":"I have a sore throat"},{"hmong":"Kuv mob hniav","english":"I have a toothache"},{"hmong":"Kuv mob qhov ntsej","english":"I have an earache"},{"hmong":"Kuv ua npaws","english":"I have a fever"},{"hmong":"Kuv ua no","english":"I have chills"},{"hmong":"Kuv hnoos","english":"I have a cough"},{"hmong":"Kuv txham","english":"I am sneezing"},{"hmong":"Kuv qhov ntswg txhaws","english":"I have a stuffy nose"},{"hmong":"Kuv qhov ntswg los kua","english":"I have a runny nose"},{"hmong":"Kuv xav ntuav","english":"I feel nauseous"},{"hmong":"Kuv ntuav","english":"I am vomiting"},{"hmong":"Kuv raws plab","english":"I have diarrhea"},{"hmong":"Kuv cem quav tawv","english":"I am constipated"},{"hmong":"Kuv kiv taubhau","english":"I feel dizzy"},{"hmong":"Kuv tsaus muag","english":"I feel faint"},{"hmong":"Kuv ua tsis taus pa","english":"I can't breathe"},{"hmong":"Kuv ua pa nyuaj","english":"I have difficulty breathing"},{"hmong":"Kuv nkees heev","english":"I am very tired"},{"hmong":"Kuv tsis muaj zog","english":"I have no energy"},{"hmong":"Kuv pw tsis tsaug zog","english":"I can't sleep"},{"hmong":"Kuv o","english":"I am swollen"},{"hmong":"Kuv khaus","english":"I am itchy"},{"hmong":"Kuv ua pob liab","english":"I have a rash"},{"hmong":"Kuv raug mob","english":"I am injured"},{"hmong":"Kuv los ntshav","english":"I am bleeding"}],"chronic_conditions":[{"hmong":"Kuv muaj ntshav qab zib","english":"I have diabetes"},{"hmong":"Kuv muaj ntshav siab","english":"I have high blood pressure"},{"hmong":"Kuv muaj mob plawv","english":"I have heart disease"},{"hmong":"Kuv muaj mob hawb pob","english":"I have asthma"},{"hmong":"Kuv muaj kab mob cancer","english":"I have cancer"},{"hmong":"Kuv muaj mob raum","english":"I have kidney disease"},{"hmong":"Kuv muaj mob siab","english":"I have liver disease"},{"hmong":"Kuv muaj mob pob txha","english":"I have bone/joint problems"},{"hmong":"Kuv muaj mob hlwb","english":"I have a mental health condition"},{"hmong":"Kuv muaj kev nyuaj siab","english":"I have depression"},{"hmong":"Kuv muaj kev txhawj xeeb","english":"I have anxiety"},{"hmong":"Kuv muaj mob qaug dab peg","english":"I have epilepsy/seizures"},{"hmong":"Kuv muaj mob stroke","english":"I had a stroke"},{"hmong":"Kuv xeeb me nyuam tsis tau","english":"I have difficulty getting pregnant"},{"hmong":"Kuv cev xeeb tub","english":"I am pregnant"}],"doctor_questions":[{"hmong":"Koj mob qhov twg?","english":"Where does it hurt?"},{"hmong":"Koj mob ntev npaum li cas lawm?","english":"How long have you been in pain?"},{"hmong":"Koj mob hnyav npaum li cas?","english":"How severe is your pain?"},{"hmong":"Koj puas noj tshuaj?","english":"Are you taking any medications?"},{"hmong":"Koj noj tshuaj dab tsi?","english":"What medications do you take?"},{"hmong":"Koj puas muaj allergy rau tshuaj?","english":"Are you allergic to any medications?"},{"hmong":"Koj puas muaj allergy rau zaub mov?","english":"Do you have any food allergies?"},{"hmong":"Koj tsev neeg puas muaj mob li no?","english":"Does this condition run in your family?"},{"hmong":"Koj puas haus yeeb?","english":"Do you smoke?"},{"hmong":"Koj puas haus dej cawv?","english":"Do you drink alcohol?"},{"hmong":"Koj zaum kawg noj mov thaum twg?","english":"When did you last eat?"},{"hmong":"Koj coj khaub ncaws zaum kawg thaum twg?","english":"When was your last period?"},{"hmong":"Koj puas xeeb me nyuam tau?","english":"Could you be pregnant?"},{"hmong":"Koj puas tau phais?","english":"Have you had any surgeries?"},{"hmong":"Koj puas muaj insurance?","english":"Do you have insurance?"}],"doctor_instructions":[{"hmong":"Noj tshuaj no ib hnub ob zaug","english":"Take this medicine twice a day"},{"hmong":"Noj tshuaj no ib hnub peb zaug","english":"Take this medicine three times a day"},{"hmong":"Noj tshuaj ua ntej noj mov","english":"Take medicine before eating"},{"hmong":"Noj tshuaj tom qab noj mov","english":"Take medicine after eating"},{"hmong":"Haus dej ntau","english":"Drink plenty of water"},{"hmong":"So kom ntau","english":"Get plenty of rest"},{"hmong":"Rov qab tuaj ntsib kuv","english":"Come back to see me"},{"hmong":"Koj yuav tau mus tsev kho mob","english":"You need to go to the hospital"},{"hmong":"Koj yuav tau kuaj ntshav","english":"You need a blood test"},{"hmong":"Koj yuav tau thaij duab X-ray","english":"You need an X-ray"},{"hmong":"Koj yuav tau thaij MRI","english":"You need an MRI"},{"hmong":"Koj yuav tau phais","english":"You need surgery"},{"hmong":"Tsis txhob noj...","english":"Don't eat..."},{"hmong":"Tsis txhob haus dej cawv","english":"Don't drink alcohol"},{"hmong":"Tsis txhob tsav tsheb","english":"Don't drive"}],"patient_questions":[{"hmong":"Kuv mob dab tsi?","english":"What is wrong with me?"},{"hmong":"Qhov no puas loj?","english":"Is this serious?"},{"hmong":"Kuv yuav zoo thaum twg?","english":"When will I get better?"},{"hmong":"Tshuaj no yog dab tsi?","english":"What is this medicine?"},{"hmong":"Tshuaj no muaj side effects dab tsi?","english":"What are the side effects of this medicine?"},{"hmong":"Kuv puas noj tau zaub mov li qub?","english":"Can I eat normally?"},{"hmong":"Kuv puas ua hauj lwm tau?","english":"Can I work?"},{"hmong":"Kuv puas tsav tsheb tau?","english":"Can I drive?"},{"hmong":"Kuv yuav noj tshuaj ntev npaum li cas?","english":"How long do I need to take this medicine?"},{"hmong":"Kuv yuav tsum ua dab tsi ntxiv?","english":"What else should I do?"},{"hmong":"Thaum twg kuv yuav tsum rov qab tuaj?","english":"When should I come back?"},{"hmong":"Kuv puas xav tau tus neeg txhais lus?","english":"Can I have an interpreter?"},{"hmong":"Koj puas hais tau lus Hmoob?","english":"Do you speak Hmong?"},{"hmong":"Thov sau rau hauv ntawv","english":"Please write it down"},{"hmong":"Kuv tsis nkag siab","english":"I don't understand"}],"appointments":[{"hmong":"Kuv xav teem sij hawm ntsib kws kho mob","english":"I want to make a doctor's appointment"},{"hmong":"Kuv muaj appointment hnub no","english":"I have an appointment today"},{"hmong":"Kuv tuaj ntsib Dr. ...","english":"I'm here to see Dr. ..."},{"hmong":"Kuv tuaj kuaj cev","english":"I'm here for a check-up"},{"hmong":"Kuv xav hloov kuv lub sij hawm","english":"I want to change my appointment"},{"hmong":"Kuv xav tshem kuv lub sij hawm","english":"I want to cancel my appointment"},{"hmong":"Koj puas muaj sij hawm sai dua?","english":"Do you have an earlier time?"},{"hmong":"Kuv yuav tos ntev npaum li cas?","english":"How long will I have to wait?"},{"hmong":"Kuv lub insurance yog...","english":"My insurance is..."},{"hmong":"Kuv tsis muaj insurance","english":"I don't have insurance"}],"pharmacy":[{"hmong":"Kuv tuaj nqa kuv cov tshuaj","english":"I'm here to pick up my prescription"},{"hmong":"Kuv yuav tos ntev npaum li cas?","english":"How long will I have to wait?"},{"hmong":"Cov tshuaj no noj li cas?","english":"How do I take this medicine?"},{"hmong":"Kuv yuav noj cov tshuaj no nrog zaub mov?","english":"Should I take this medicine with food?"},{"hmong":"Cov tshuaj no puas muaj generic?","english":"Is there a generic version of this medicine?"},{"hmong":"Cov tshuaj no nqi pes tsawg?","english":"How much does this medicine cost?"},{"hmong":"Kuv tshuaj tas lawm","english":"I ran out of medicine"},{"hmong":"Kuv xav tau tshuaj ntxiv","english":"I need a refill"},{"hmong":"Kuv muaj allergy rau...","english":"I am allergic to..."},{"hmong":"Kuv noj tau cov tshuaj no nrog kuv lwm cov tshuaj?","english":"Can I take this with my other medications?"}]},"emergency":{"urgent_phrases":[{"hmong":"Pab kuv!","english":"Help me!"},{"hmong":"Hu rau 911!","english":"Call 911!"},{"hmong":"Hu rau tub ceev xwm!","english":"Call the police!"},{"hmong":"Hu rau tsheb thauj mob!","english":"Call an ambulance!"},{"hmong":"Hu rau tsheb cawm hluav taws!","english":"Call the fire department!"},{"hmong":"Muaj xwm txheej ceev!","english":"It's an emergency!"},{"hmong":"Kuv xav tau kws kho mob!","english":"I need a doctor!"},{"hmong":"Muaj neeg raug mob!","english":"Someone is hurt!"},{"hmong":"Muaj kev sib tsoo tsheb!","english":"There's been a car accident!"},{"hmong":"Muaj hluav taws kub!","english":"There's a fire!"},{"hmong":"Muaj neeg poob dej!","english":"Someone is drowning!"},{"hmong":"Kuv ploj kev lawm!","english":"I am lost!"},{"hmong":"Muaj neeg raug tub sab!","english":"Someone has been robbed!"},{"hmong":"Kuv tus me nyuam ploj lawm!","english":"My child is missing!"},{"hmong":"Kuv raug tub sab!","english":"I've been robbed!"}],"location_emergency":[{"hmong":"Kuv nyob ntawm...","english":"I am at..."},{"hmong":"Kuv nyob ntawm txoj kev...","english":"I am on ... street"},{"hmong":"Kuv tsis paub kuv nyob qhov twg","english":"I don't know where I am"},{"hmong":"Thov xa neeg tuaj pab","english":"Please send help"},{"hmong":"Tsev kho mob nyob qhov twg?","english":"Where is the hospital?"},{"hmong":"Chaw tub ceev xwm nyob qhov twg?","english":"Where is the police station?"},{"hmong":"Coj kuv mus tsev kho mob","english":"Take me to the hospital"},{"hmong":"Kuv xav tau tsheb thauj mob","english":"I need an ambulance"},{"hmong":"Muaj pes tsawg tus neeg raug mob?","english":"How many people are injured?"},{"hmong":"Neeg raug mob ntawd puas paub teb?","english":"Is the injured person conscious?"}],"medical_emergency":[{"hmong":"Nws tsis ua pa!","english":"They're not breathing!"},{"hmong":"Nws lub plawv tsis ntaus!","english":"Their heart isn't beating!"},{"hmong":"Nws tsaus muag lawm!","english":"They fainted!"},{"hmong":"Nws qaug dab peg!","english":"They're having a seizure!"},{"hmong":"Nws ua tsis taus pa!","english":"They can't breathe!"},{"hmong":"Nws los ntshav ntau!","english":"They're bleeding heavily!"},{"hmong":"Nws tau noj tshuaj ntau dhau!","english":"They overdosed!"},{"hmong":"Nws muaj allergy heev!","english":"They're having a severe allergic reaction!"},{"hmong":"Nws mob hauv siab!","english":"They have chest pain!"},{"hmong":"Kuv xav tias nws stroke!","english":"I think they're having a stroke!"}]},"legal":{"rights":[{"hmong":"Koj muaj cai nyob ntsiag to","english":"You have the right to remain silent"},{"hmong":"Koj muaj cai muaj kws lij choj","english":"You have the right to an attorney"},{"hmong":"Koj puas nkag siab koj cov cai?","english":"Do you understand your rights?"},{"hmong":"Kuv xav tau kws lij choj","english":"I want a lawyer"},{"hmong":"Kuv tsis teb ib lo lus txog thaum kuv muaj kws lij choj","english":"I won't answer questions until I have a lawyer"},{"hmong":"Kuv xav tau tus neeg txhais lus","english":"I need an interpreter"},{"hmong":"Kuv muaj cai tsis teb lus","english":"I have the right not to answer"},{"hmong":"Kuv xav hu xov tooj","english":"I want to make a phone call"},{"hmong":"Kuv muaj cai paub vim li cas koj ntes kuv","english":"I have the right to know why you're arresting me"},{"hmong":"Kuv yog neeg Asmeskas","english":"I am a US citizen"}],"court":[{"hmong":"Kuv lub rooj sib hais nyob thaum twg?","english":"When is my court date?"},{"hmong":"Kuv yuav tsum mus tsev hais plaub qhov twg?","english":"Which courthouse do I go to?"},{"hmong":"Kuv tus kws lij choj nyob qhov twg?","english":"Where is my lawyer?"},{"hmong":"Kuv lees tias kuv tsis muaj txim","english":"I plead not guilty"},{"hmong":"Kuv lees tias kuv muaj txim","english":"I plead guilty"},{"hmong":"Kuv tsis nkag siab","english":"I don't understand"},{"hmong":"Thov hais dua","english":"Please repeat that"},{"hmong":"Kuv xav tau tus neeg txhais lus","english":"I need an interpreter"},{"hmong":"Kuv puas tau tawm ntawm txim?","english":"Can I be released on bail?"},{"hmong":"Kuv txim yog dab tsi?","english":"What are the charges against me?"}],"immigration":[{"hmong":"Kuv yog neeg thoj nam","english":"I am a refugee"},{"hmong":"Kuv yog neeg txawv teb chaws","english":"I am an immigrant"},{"hmong":"Kuv muaj green card","english":"I have a green card"},{"hmong":"Kuv tab tom ua ntaub ntawv thov ua pej xeem","english":"I am applying for citizenship"},{"hmong":"Kuv xav thov asylum","english":"I want to apply for asylum"},{"hmong":"Kuv cov ntaub ntawv nyob qhov twg?","english":"Where are my documents?"},{"hmong":"Kuv xav ntsib kuv tsev neeg","english":"I want to see my family"},{"hmong":"Kuv muaj cai nyob hauv teb chaws no","english":"I have the right to be in this country"},{"hmong":"Thov tsis txhob xa kuv rov qab","english":"Please don't deport me"},{"hmong":"Kuv cov me nyuam yog neeg Asmeskas","english":"My children are US citizens"}]},"numbers":{"cardinal":[{"hmong":"ib","english":"one"},{"hmong":"ob","english":"two"},{"hmong":"peb","english":"three"},{"hmong":"plaub","english":"four"},{"hmong":"tsib","english":"five"},{"hmong":"rau","english":"six"},{"hmong":"xya","english":"seven"},{"hmong":"yim","english":"eight"},{"hmong":"cuaj","english":"nine"},{"hmong":"kaum","english":"ten"},{"hmong":"kaum ib","english":"eleven"},{"hmong":"kaum ob","english":"twelve"},{"hmong":"nees nkaum","english":"twenty"},{"hmong":"peb caug","english":"thirty"},{"hmong":"plaub caug","english":"forty"},{"hmong":"tsib caug","english":"fifty"},{"hmong":"rau caum","english":"sixty"},{"hmong":"xya caum","english":"seventy"},{"hmong":"yim caum","english":"eighty"},{"hmong":"cuaj caum","english":"ninety"},{"hmong":"ib puas","english":"one hundred"},{"hmong":"ib txhiab","english":"one thousand"},{"hmong":"ib vam","english":"ten thousand"},{"hmong":"ib plhom","english":"one million"}],"ordinal":[{"hmong":"thawj","english":"first"},{"hmong":"ob","english":"second"},{"hmong":"peb","english":"third"},{"hmong":"plaub","english":"fourth"},{"hmong":"tsib","english":"fifth"},{"hmong":"zaum kawg","english":"last"}],"time_numbers":[{"hmong":"ib teev","english":"one o'clock"},{"hmong":"ob teev","english":"two o'clock"},{"hmong":"peb teev","english":"three o'clock"},{"hmong":"kaum ob teev","english":"twelve o'clock"},{"hmong":"ib teev peb caug feeb","english":"one thirty"},{"hmong":"ob teev kaum tsib feeb","english":"two fifteen"},{"hmong":"peb teev plaub caug tsib feeb","english":"three forty-five"}],"money":[{"hmong":"ib duas las","english":"one dollar"},{"hmong":"tsib duas las","english":"five dollars"},{"hmong":"kaum duas las","english":"ten dollars"},{"hmong":"nees nkaum duas las","english":"twenty dollars"},{"hmong":"ib puas duas las","english":"one hundred dollars"},{"hmong":"ib xees","english":"one cent"},{"hmong":"nees nkaum tsib xees","english":"twenty-five cents"},{"hmong":"tsib caug xees","english":"fifty cents"}]}};
+
+
+        // ========== INITIALIZATION ==========
+        function startSession() {
+            const name = document.getElementById('speaker-name').value.trim();
+            const dialect = document.getElementById('dialect').value;
+
+            if (!name || !dialect) {
+                alert('Please enter your name and select your dialect');
+                return;
+            }
+
+            speakerInfo = {
+                name,
+                speakerId: document.getElementById('speaker-id').value.trim() || `speaker_${name.toLowerCase().replace(/[^a-z]/g, '')}_${Date.now().toString(36)}`,
+                dialect,
+                origin: document.getElementById('origin').value.trim(),
+                ageRange: document.getElementById('age-range').value,
+                currentLocation: document.getElementById('current-location').value.trim(),
+                sessionStart: new Date().toISOString(),
+                consent: consentInfo
+            };
+
+            // Load saved progress
+            loadProgress();
+
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('sidebar-speaker-name').textContent = speakerInfo.name;
+
+            renderAll();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem(`hmong-progress-${speakerInfo.speakerId}`);
+            if (saved) {
+                const data = JSON.parse(saved);
+                recordings = data.recordings || [];
+                corrections = data.corrections || [];
+                events = data.events || [];
+                categoryProgress = data.categoryProgress || {};
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem(`hmong-progress-${speakerInfo.speakerId}`, JSON.stringify({
+                recordings, corrections, events, categoryProgress
+            }));
+        }
+
+        // ========== NAVIGATION ==========
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            event?.target?.classList.add('active');
+            renderAll();
+        }
+
+        // ========== RENDER FUNCTIONS ==========
+        function renderAll() {
+            updateStats();
+            renderSessionChecklist();
+            renderCategories();
+            renderRecordingsList();
+            renderCorrectionsList();
+            renderCalendar();
+            renderEvents();
+            renderConsentInfo();
+        }
+
+        function renderConsentInfo() {
+            const dateEl = document.getElementById('consent-date');
+            const toggleEl = document.getElementById('consent-public-toggle');
+
+            if (dateEl && consentInfo.tosAcceptedDate) {
+                dateEl.textContent = new Date(consentInfo.tosAcceptedDate).toLocaleDateString();
+            }
+            if (toggleEl) {
+                toggleEl.checked = consentInfo.allowPublicStories;
+            }
+        }
+
+        function updatePublicConsent() {
+            consentInfo.allowPublicStories = document.getElementById('consent-public-toggle').checked;
+            localStorage.setItem('hmong-project-consent', JSON.stringify(consentInfo));
+        }
+
+        function updateStats() {
+            const totalDuration = recordings.reduce((sum, r) => sum + (r.duration || 0), 0);
+            const mins = Math.floor(totalDuration / 60);
+            const secs = Math.floor(totalDuration % 60);
+
+            const completedSessions = sessions.filter(s =>
+                s.categories.every(c => (categoryProgress[c] || 0) >= getTotalPhrases(c))
+            ).length;
+
+            document.getElementById('stat-sessions').textContent = `${completedSessions}/5`;
+            document.getElementById('stat-recordings').textContent = recordings.length;
+            document.getElementById('stat-duration').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('stat-corrections').textContent = corrections.length;
+
+            // Calculate total phrases from loaded data
+            let totalPhrasesCount = 0;
+            ['everyday', 'medical', 'emergency', 'legal', 'numbers'].forEach(domain => {
+                if (phrases[domain]) {
+                    Object.keys(phrases[domain]).forEach(cat => {
+                        totalPhrasesCount += phrases[domain][cat].length;
+                    });
+                }
+            });
+            document.getElementById('stat-phrases').textContent = totalPhrasesCount;
+
+            document.getElementById('nav-recordings-count').textContent = recordings.length;
+            document.getElementById('nav-corrections-count').textContent = corrections.length;
+
+            // Export page stats
+            document.getElementById('export-recordings').textContent = recordings.length;
+            document.getElementById('export-duration').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('export-corrections').textContent = corrections.length;
+
+            // Overall progress
+            const totalPhrases = Object.values(categoryProgress).reduce((a, b) => a + b, 0);
+            const totalAvailable = 475;
+            const percent = Math.round((totalPhrases / totalAvailable) * 100);
+            document.getElementById('overall-progress').style.width = `${percent}%`;
+            document.getElementById('overall-progress-text').textContent = `${percent}%`;
+        }
+
+        function getTotalPhrases(category) {
+            const domains = ['everyday', 'medical', 'emergency', 'legal', 'numbers'];
+            for (const domain of domains) {
+                if (phrases[domain] && phrases[domain][category]) {
+                    return phrases[domain][category].length;
+                }
+            }
+            return 0;
+        }
+
+        function renderSessionChecklist() {
+            const container = document.getElementById('session-checklist');
+            container.innerHTML = sessions.map(session => {
+                const completed = session.categories.every(c => (categoryProgress[c] || 0) >= getTotalPhrases(c));
+                const inProgress = session.categories.some(c => (categoryProgress[c] || 0) > 0);
+                const isCurrent = !completed && inProgress;
+
+                const sessionPhrases = session.categories.reduce((sum, c) => sum + getTotalPhrases(c), 0);
+                const sessionDone = session.categories.reduce((sum, c) => sum + (categoryProgress[c] || 0), 0);
+                const extrasText = session.extras ? ` + ${session.extras.join(', ')}` : '';
+
+                return `
+                    <div class="checklist-item ${completed ? 'completed' : ''} ${isCurrent ? 'current' : ''}">
+                        <div class="checklist-checkbox">${completed ? '✓' : ''}</div>
+                        <div class="checklist-content">
+                            <div class="checklist-title">${session.name}</div>
+                            <div class="checklist-meta">${sessionDone}/${sessionPhrases} phrases${extrasText}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Session details
+            const detailsContainer = document.getElementById('session-details-list');
+            if (detailsContainer) {
+                detailsContainer.innerHTML = sessions.map(session => {
+                    const totalPhrases = session.categories.reduce((sum, c) => sum + getTotalPhrases(c), 0);
+                    const completedPhrases = session.categories.reduce((sum, c) => sum + (categoryProgress[c] || 0), 0);
+                    const percent = totalPhrases > 0 ? Math.round((completedPhrases / totalPhrases) * 100) : 0;
+
+                    return `
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="font-weight: 500;">${session.name}</span>
+                                <span style="color: var(--text-light);">${completedPhrases}/${totalPhrases}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${percent === 100 ? 'success' : ''}" style="width: ${percent}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById('category-grid');
+            if (!grid) {
+                console.error('category-grid element not found');
+                return;
+            }
+
+            const allCategories = [];
+
+            ['everyday', 'medical', 'emergency', 'legal', 'numbers'].forEach(domain => {
+                if (phrases[domain]) {
+                    Object.keys(phrases[domain]).forEach(cat => {
+                        const total = phrases[domain][cat].length;
+                        const done = categoryProgress[cat] || 0;
+                        allCategories.push({ domain, category: cat, total, done });
+                    });
+                }
+            });
+
+            if (allCategories.length === 0) {
+                grid.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-light);">No categories available</div>`;
+                return;
+            }
+
+            grid.innerHTML = allCategories.map(c => {
+                const percent = c.total > 0 ? Math.round((c.done / c.total) * 100) : 0;
+                const isComplete = percent === 100;
+                const displayName = c.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                return `
+                    <div class="category-card ${isComplete ? 'completed' : ''}" onclick="startCategory('${c.domain}', '${c.category}')">
+                        <div class="category-name">${displayName}</div>
+                        <div class="category-progress" style="font-size: 1.1rem; font-weight: 600; color: ${isComplete ? 'var(--success)' : 'var(--primary)'};">
+                            ${c.done} / ${c.total} phrases
+                        </div>
+                        <div class="progress-bar" style="height: 6px; margin-top: 0.5rem;">
+                            <div class="progress-fill ${isComplete ? 'success' : ''}" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== RECORDING FUNCTIONS ==========
+        function startCategory(domain, category) {
+            currentCategory = category;
+            categoryPhrases = phrases[domain][category].map((p, i) => ({
+                ...p,
+                id: `${domain}_${category}_${i}`,
+                domain, category
+            }));
+            currentPhraseIndex = categoryProgress[category] || 0;
+
+            document.getElementById('recording-modal').classList.remove('hidden');
+            document.getElementById('current-category-title').textContent = category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            showCurrentPhrase();
+        }
+
+        function closeRecording() {
+            document.getElementById('recording-modal').classList.add('hidden');
+            currentCategory = null;
+            // Reset to recording view for next time
+            showRecordingView();
+            renderCategories(); // Update category progress display
+        }
+
+        function showCurrentPhrase() {
+            if (currentPhraseIndex >= categoryPhrases.length) {
+                alert('Category complete! Great work!');
+                closeRecording();
+                renderAll();
+                return;
+            }
+
+            const phrase = categoryPhrases[currentPhraseIndex];
+            document.getElementById('prompt-category').textContent = `${phrase.domain} > ${phrase.category}`;
+            document.getElementById('prompt-hmong').textContent = phrase.hmong;
+            document.getElementById('prompt-english').textContent = phrase.english;
+            document.getElementById('phrase-actions').style.display = 'flex';
+
+            const progress = (currentPhraseIndex / categoryPhrases.length) * 100;
+            document.getElementById('phrase-progress').style.width = `${progress}%`;
+            document.getElementById('phrase-progress-text').textContent = `${currentPhraseIndex} / ${categoryPhrases.length}`;
+
+            document.getElementById('audio-preview').classList.add('hidden');
+            document.getElementById('save-btn').disabled = true;
+            document.getElementById('timer').textContent = '0:00';
+            document.getElementById('recording-status').textContent = '';
+            currentAudioBlob = null;
+        }
+
+        async function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                await startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, sampleRate: 44100 } });
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    currentAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    document.getElementById('audio-preview').src = URL.createObjectURL(currentAudioBlob);
+                    document.getElementById('audio-preview').classList.remove('hidden');
+                    document.getElementById('save-btn').disabled = false;
+                    stream.getTracks().forEach(t => t.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                recordingStartTime = Date.now();
+
+                document.getElementById('record-btn').classList.add('recording');
+                document.getElementById('record-btn-text').textContent = 'Stop';
+                document.getElementById('recording-status').textContent = 'Recording...';
+                document.getElementById('recording-status').classList.add('active');
+
+                timerInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    document.getElementById('timer').textContent = `${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;
+                }, 100);
+            } catch (err) {
+                alert('Could not access microphone. Please allow microphone access.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                clearInterval(timerInterval);
+                document.getElementById('record-btn').classList.remove('recording');
+                document.getElementById('record-btn-text').textContent = 'Start';
+                document.getElementById('recording-status').textContent = 'Done!';
+                document.getElementById('recording-status').classList.remove('active');
+            }
+        }
+
+        function reRecord() {
+            document.getElementById('audio-preview').classList.add('hidden');
+            document.getElementById('save-btn').disabled = true;
+            document.getElementById('timer').textContent = '0:00';
+            currentAudioBlob = null;
+        }
+
+        function skipPhrase() {
+            currentPhraseIndex++;
+            showCurrentPhrase();
+        }
+
+        function saveAndNext() {
+            if (!currentAudioBlob) return;
+
+            const phrase = categoryPhrases[currentPhraseIndex];
+            recordings.push({
+                id: `${speakerInfo.speakerId}_${phrase.id}_${Date.now()}`,
+                type: 'phrase',
+                phraseId: phrase.id,
+                hmong: phrase.hmong,
+                english: phrase.english,
+                category: phrase.category,
+                audioBlob: currentAudioBlob,
+                duration: (Date.now() - recordingStartTime) / 1000,
+                timestamp: new Date().toISOString()
+            });
+
+            categoryProgress[currentCategory] = currentPhraseIndex + 1;
+            saveProgress();
+
+            currentPhraseIndex++;
+            showCurrentPhrase();
+            renderAll();
+        }
+
+        // ========== BOOK READING FUNCTIONS ==========
+        let readingMediaRecorder = null;
+        let readingAudioChunks = [];
+        let isReadingRecording = false;
+        let readingStartTime = null;
+        let currentReadingAudioBlob = null;
+
+        const readingPrompts = {
+            folktale: "Puag thaum ub, muaj ib tug ntxhais zoo nkauj heev nyob hauv ib lub zos me me...\n\n(Continue with your own folktale or read one you know)",
+            news: "Hnub no peb yuav tham txog tej xwm txheej tshiab hauv peb lub zej zog...\n\n(Read news-style content about community events)",
+            instructions: "Ua ntej peb yuav pib, koj yuav tsum npaj cov khoom no: ...\n\n(Read instructions for cooking, crafts, or any how-to content)",
+            letter: "Nyob zoo kuv tus phooj ywg, kuv sau ntawv tuaj rau koj vim...\n\n(Read a letter or correspondence)"
+        };
+
+        function updateReadingPrompt() {
+            const source = document.getElementById('reading-source').value;
+            const promptEl = document.getElementById('reading-prompt');
+            if (source === 'custom') {
+                promptEl.innerHTML = '<p style="color: var(--text-light); text-align: center;">Read from your own book or text.<br>Type or paste the text in the box below after recording.</p>';
+            } else {
+                promptEl.innerHTML = `<div class="prompt-hmong" style="font-size: 1.1rem; white-space: pre-line;">${readingPrompts[source]}</div>`;
+            }
+        }
+
+        async function toggleReadingRecording() {
+            if (isReadingRecording) { stopReadingRecording(); }
+            else { await startReadingRecording(); }
+        }
+
+        async function startReadingRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                readingMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                readingAudioChunks = [];
+
+                readingMediaRecorder.ondataavailable = e => readingAudioChunks.push(e.data);
+                readingMediaRecorder.onstop = () => {
+                    currentReadingAudioBlob = new Blob(readingAudioChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(currentReadingAudioBlob);
+                    document.getElementById('reading-audio-preview').src = url;
+                    document.getElementById('reading-audio-preview').classList.remove('hidden');
+                };
+
+                readingMediaRecorder.start();
+                isReadingRecording = true;
+                readingStartTime = Date.now();
+                document.getElementById('reading-record-btn-text').textContent = 'Stop';
+                document.getElementById('reading-record-btn').classList.add('recording');
+
+                // Timer
+                const timerInterval = setInterval(() => {
+                    if (!isReadingRecording) { clearInterval(timerInterval); return; }
+                    const elapsed = Math.floor((Date.now() - readingStartTime) / 1000);
+                    document.getElementById('reading-timer').textContent = `${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;
+                }, 1000);
+            } catch (e) {
+                alert('Could not access microphone: ' + e.message);
+            }
+        }
+
+        function stopReadingRecording() {
+            if (readingMediaRecorder && isReadingRecording) {
+                readingMediaRecorder.stop();
+                isReadingRecording = false;
+                document.getElementById('reading-record-btn-text').textContent = 'Start Recording';
+                document.getElementById('reading-record-btn').classList.remove('recording');
+            }
+        }
+
+        function saveReadingRecording() {
+            if (!currentReadingAudioBlob) { alert('Please record something first'); return; }
+            const title = document.getElementById('reading-title').value.trim() || 'Untitled Reading';
+
+            recordings.push({
+                id: `reading_${Date.now()}`,
+                type: 'reading',
+                recordingType: document.getElementById('reading-source').value,
+                title,
+                hmongText: document.getElementById('reading-text').value.trim(),
+                audioBlob: currentReadingAudioBlob,
+                duration: (Date.now() - readingStartTime) / 1000,
+                timestamp: new Date().toISOString()
+            });
+
+            saveProgress();
+            document.getElementById('reading-title').value = '';
+            document.getElementById('reading-text').value = '';
+            document.getElementById('reading-audio-preview').classList.add('hidden');
+            document.getElementById('reading-timer').textContent = '0:00';
+            currentReadingAudioBlob = null;
+            alert('Reading saved!');
+            renderAll();
+        }
+
+        // ========== STORY TELLING FUNCTIONS ==========
+        let storyMediaRecorder = null;
+        let storyAudioChunks = [];
+        let isStoryRecording = false;
+        let storyStartTime = null;
+        let currentStoryAudioBlob = null;
+
+        const storyPrompts = {
+            childhood: "Tell us about a memory from your childhood.",
+            family: "Tell a story about your family - parents, grandparents, siblings.",
+            tradition: "Describe a Hmong tradition, celebration, or ceremony.",
+            journey: "Tell the story of your journey - how you came to where you live now.",
+            funny: "Tell us about something funny that happened to you.",
+            cooking: "Explain how to cook one of your favorite Hmong dishes.",
+            folktale: "Tell a Hmong folktale or legend that you know.",
+            daily: "Describe what you did yesterday from morning to night.",
+            dream: "Talk about a dream or goal you have for the future.",
+            custom: "Tell us about your chosen topic."
+        };
+
+        function updateStoryPrompt() {
+            const topic = document.getElementById('story-topic').value;
+            document.getElementById('story-prompt').querySelector('.prompt-english').textContent = storyPrompts[topic];
+            document.getElementById('custom-topic-group').style.display = topic === 'custom' ? 'block' : 'none';
+        }
+
+        async function toggleStoryRecording() {
+            if (isStoryRecording) { stopStoryRecording(); }
+            else { await startStoryRecording(); }
+        }
+
+        async function startStoryRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                storyMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                storyAudioChunks = [];
+
+                storyMediaRecorder.ondataavailable = e => storyAudioChunks.push(e.data);
+                storyMediaRecorder.onstop = () => {
+                    currentStoryAudioBlob = new Blob(storyAudioChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(currentStoryAudioBlob);
+                    document.getElementById('story-audio-preview').src = url;
+                    document.getElementById('story-audio-preview').classList.remove('hidden');
+                };
+
+                storyMediaRecorder.start();
+                isStoryRecording = true;
+                storyStartTime = Date.now();
+                document.getElementById('story-record-btn-text').textContent = 'Stop';
+                document.getElementById('story-record-btn').classList.add('recording');
+
+                // Timer
+                const timerInterval = setInterval(() => {
+                    if (!isStoryRecording) { clearInterval(timerInterval); return; }
+                    const elapsed = Math.floor((Date.now() - storyStartTime) / 1000);
+                    document.getElementById('story-timer').textContent = `${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;
+                }, 1000);
+            } catch (e) {
+                alert('Could not access microphone: ' + e.message);
+            }
+        }
+
+        function stopStoryRecording() {
+            if (storyMediaRecorder && isStoryRecording) {
+                storyMediaRecorder.stop();
+                isStoryRecording = false;
+                document.getElementById('story-record-btn-text').textContent = 'Start Recording';
+                document.getElementById('story-record-btn').classList.remove('recording');
+            }
+        }
+
+        function saveStoryRecording() {
+            if (!currentStoryAudioBlob) { alert('Please record something first'); return; }
+            const topic = document.getElementById('story-topic').value;
+            const title = topic === 'custom'
+                ? document.getElementById('story-custom-topic').value.trim() || 'Custom Story'
+                : storyPrompts[topic];
+
+            recordings.push({
+                id: `story_${Date.now()}`,
+                type: 'story',
+                topic,
+                title,
+                summary: document.getElementById('story-summary').value.trim(),
+                audioBlob: currentStoryAudioBlob,
+                duration: (Date.now() - storyStartTime) / 1000,
+                timestamp: new Date().toISOString()
+            });
+
+            saveProgress();
+            document.getElementById('story-summary').value = '';
+            document.getElementById('story-custom-topic').value = '';
+            document.getElementById('story-audio-preview').classList.add('hidden');
+            document.getElementById('story-timer').textContent = '0:00';
+            currentStoryAudioBlob = null;
+            alert('Story saved!');
+            renderAll();
+        }
+
+        // ========== FREE RECORDING FUNCTIONS ==========
+        async function toggleFreeRecording() {
+            if (isFreeRecording) { stopFreeRecording(); }
+            else { await startFreeRecording(); }
+        }
+
+        async function startFreeRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, sampleRate: 44100 } });
+                freeMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                freeAudioChunks = [];
+
+                freeMediaRecorder.ondataavailable = e => freeAudioChunks.push(e.data);
+                freeMediaRecorder.onstop = () => {
+                    currentFreeAudioBlob = new Blob(freeAudioChunks, { type: 'audio/webm' });
+                    document.getElementById('free-audio-preview').src = URL.createObjectURL(currentFreeAudioBlob);
+                    document.getElementById('free-audio-preview').classList.remove('hidden');
+                    stream.getTracks().forEach(t => t.stop());
+                };
+
+                freeMediaRecorder.start();
+                isFreeRecording = true;
+                freeRecordingStartTime = Date.now();
+
+                document.getElementById('free-record-btn').classList.add('recording');
+                document.getElementById('free-record-btn-text').textContent = 'Stop';
+
+                freeTimerInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - freeRecordingStartTime) / 1000);
+                    document.getElementById('free-timer').textContent = `${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,'0')}`;
+                }, 100);
+            } catch (err) {
+                alert('Could not access microphone.');
+            }
+        }
+
+        function stopFreeRecording() {
+            if (freeMediaRecorder && isFreeRecording) {
+                freeMediaRecorder.stop();
+                isFreeRecording = false;
+                clearInterval(freeTimerInterval);
+                document.getElementById('free-record-btn').classList.remove('recording');
+                document.getElementById('free-record-btn-text').textContent = 'Start';
+            }
+        }
+
+        function saveFreeRecording() {
+            if (!currentFreeAudioBlob) { alert('Please record first'); return; }
+            const title = document.getElementById('free-title').value.trim();
+            if (!title) { alert('Please enter a title'); return; }
+
+            recordings.push({
+                id: `${speakerInfo.speakerId}_free_${Date.now()}`,
+                type: 'free',
+                recordingType: document.getElementById('free-type').value,
+                title,
+                hmong: document.getElementById('free-hmong-text').value.trim(),
+                english: document.getElementById('free-english-text').value.trim(),
+                audioBlob: currentFreeAudioBlob,
+                duration: (Date.now() - freeRecordingStartTime) / 1000,
+                timestamp: new Date().toISOString()
+            });
+
+            saveProgress();
+            document.getElementById('free-title').value = '';
+            document.getElementById('free-hmong-text').value = '';
+            document.getElementById('free-english-text').value = '';
+            document.getElementById('free-audio-preview').classList.add('hidden');
+            document.getElementById('free-timer').textContent = '0:00';
+            currentFreeAudioBlob = null;
+            alert('Recording saved!');
+            renderAll();
+        }
+
+        // ========== CORRECTIONS (inline views) ==========
+        function showRecordingView() {
+            document.getElementById('recording-view').classList.remove('hidden');
+            document.getElementById('edit-view').classList.add('hidden');
+            document.getElementById('flag-view').classList.add('hidden');
+        }
+
+        function showEditView() {
+            if (currentPhraseIndex >= categoryPhrases.length) return;
+            const phrase = categoryPhrases[currentPhraseIndex];
+            document.getElementById('edit-original-hmong').textContent = phrase.hmong;
+            document.getElementById('edit-original-english').textContent = phrase.english;
+            document.getElementById('edit-new-hmong').value = phrase.hmong;
+            document.getElementById('edit-new-english').value = phrase.english;
+            document.getElementById('edit-reason').value = '';
+
+            document.getElementById('recording-view').classList.add('hidden');
+            document.getElementById('edit-view').classList.remove('hidden');
+            document.getElementById('flag-view').classList.add('hidden');
+        }
+
+        function showFlagView() {
+            if (currentPhraseIndex >= categoryPhrases.length) return;
+            const phrase = categoryPhrases[currentPhraseIndex];
+            document.getElementById('flag-phrase').textContent = `${phrase.hmong} = ${phrase.english}`;
+            document.getElementById('flag-notes').value = '';
+
+            document.getElementById('recording-view').classList.add('hidden');
+            document.getElementById('edit-view').classList.add('hidden');
+            document.getElementById('flag-view').classList.remove('hidden');
+        }
+
+        function saveCorrection() {
+            const phrase = categoryPhrases[currentPhraseIndex];
+            const newHmong = document.getElementById('edit-new-hmong').value.trim();
+            const newEnglish = document.getElementById('edit-new-english').value.trim();
+            if (!newHmong) { alert('Please enter corrected Hmong'); return; }
+            if (newHmong === phrase.hmong && newEnglish === phrase.english) { alert('No changes made'); return; }
+
+            corrections.push({
+                type: 'edit', phraseId: phrase.id,
+                originalHmong: phrase.hmong, originalEnglish: phrase.english,
+                newHmong, newEnglish: newEnglish || phrase.english,
+                reason: document.getElementById('edit-reason').value.trim(),
+                speakerId: speakerInfo.speakerId, speakerName: speakerInfo.name,
+                timestamp: new Date().toISOString()
+            });
+
+            saveProgress();
+            showRecordingView();
+            renderAll();
+            alert('Correction saved!');
+        }
+
+        function saveFlag() {
+            const phrase = categoryPhrases[currentPhraseIndex];
+            corrections.push({
+                type: 'flag', phraseId: phrase.id,
+                originalHmong: phrase.hmong, originalEnglish: phrase.english,
+                issueType: document.getElementById('flag-issue').value,
+                reason: document.getElementById('flag-notes').value.trim(),
+                speakerId: speakerInfo.speakerId, speakerName: speakerInfo.name,
+                timestamp: new Date().toISOString()
+            });
+            saveProgress();
+            showRecordingView();
+            renderAll();
+            alert('Flag submitted!');
+        }
+
+        function renderCorrectionsList() {
+            const container = document.getElementById('corrections-list');
+            if (corrections.length === 0) {
+                container.innerHTML = '<div class="empty-state">No corrections yet</div>';
+                return;
+            }
+            container.innerHTML = corrections.map((c, i) => `
+                <div class="correction-item">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-size: 0.7rem; color: ${c.type === 'edit' ? '#1e40af' : '#92400e'}; font-weight: 600; text-transform: uppercase;">
+                            ${c.type === 'edit' ? 'Edit' : 'Flag: ' + (c.issueType || '')}
+                        </span>
+                        <button onclick="deleteCorrection(${i})" style="background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.7rem;">Remove</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <div class="correction-original">${c.originalHmong} = ${c.originalEnglish}</div>
+                        ${c.type === 'edit' ? `<div class="correction-new">${c.newHmong} = ${c.newEnglish}</div>` : ''}
+                        ${c.reason ? `<div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">${c.reason}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteCorrection(i) {
+            if (confirm('Remove this correction?')) {
+                corrections.splice(i, 1);
+                saveProgress();
+                renderAll();
+            }
+        }
+
+        // ========== RECORDINGS LIST ==========
+        function renderRecordingsList() {
+            const container = document.getElementById('recordings-list');
+            if (recordings.length === 0) {
+                container.innerHTML = '<div class="empty-state">No recordings yet</div>';
+                return;
+            }
+            container.innerHTML = recordings.slice().reverse().map((r, i) => `
+                <div class="recording-item">
+                    <div class="recording-info">
+                        <div class="recording-phrase">${r.hmong || r.title}</div>
+                        <div class="recording-meta">${r.type === 'phrase' ? r.category : r.recordingType} | ${Math.round(r.duration)}s</div>
+                    </div>
+                    <button class="btn-secondary btn-sm" onclick="playRecording(${recordings.length - 1 - i})">Play</button>
+                    <button class="btn-danger btn-sm" onclick="deleteRecording(${recordings.length - 1 - i})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function playRecording(i) {
+            const audio = new Audio(URL.createObjectURL(recordings[i].audioBlob));
+            audio.play();
+        }
+
+        function deleteRecording(i) {
+            if (confirm('Delete this recording?')) {
+                recordings.splice(i, 1);
+                saveProgress();
+                renderAll();
+            }
+        }
+
+        // ========== CALENDAR ==========
+        function renderCalendar() {
+            const cal = document.getElementById('mini-calendar');
+            if (!cal) return;
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let html = ['S','M','T','W','T','F','S'].map(d => `<div class="mini-calendar-header">${d}</div>`).join('');
+
+            for (let i = 0; i < firstDay; i++) html += '<div class="mini-calendar-day other-month"></div>';
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === today.getDate();
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const hasEvent = events.some(e => e.date === dateStr);
+                html += `<div class="mini-calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''}">${day}</div>`;
+            }
+
+            cal.innerHTML = html;
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('calendar-events');
+            if (!container) return;
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            const upcoming = events.filter(e => e.date >= todayStr).sort((a,b) => a.date.localeCompare(b.date)).slice(0, 5);
+
+            if (upcoming.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = upcoming.map(e => {
+                const d = new Date(e.date);
+                return `
+                    <div class="event-item">
+                        <div class="event-date">
+                            <div class="event-date-day">${d.getDate()}</div>
+                            <div class="event-date-month">${d.toLocaleString('en', {month: 'short'})}</div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-title">${e.title}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update home page upcoming
+            const homeUpcoming = document.getElementById('upcoming-events');
+            if (homeUpcoming && upcoming.length > 0) {
+                homeUpcoming.innerHTML = upcoming.slice(0, 3).map(e => {
+                    const d = new Date(e.date);
+                    return `
+                        <div class="event-item" style="margin-bottom: 0.5rem;">
+                            <div class="event-date">
+                                <div class="event-date-day">${d.getDate()}</div>
+                                <div class="event-date-month">${d.toLocaleString('en', {month: 'short'})}</div>
+                            </div>
+                            <div class="event-content">
+                                <div class="event-title">${e.title}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function addPersonalEvent() {
+            document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('event-title').value = '';
+            document.getElementById('event-modal').classList.remove('hidden');
+        }
+
+        function hideEventModal() { document.getElementById('event-modal').classList.add('hidden'); }
+
+        function saveEvent() {
+            const title = document.getElementById('event-title').value.trim();
+            const date = document.getElementById('event-date').value;
+            if (!title || !date) { alert('Please fill in all fields'); return; }
+
+            events.push({ title, date, createdAt: new Date().toISOString() });
+            saveProgress();
+            hideEventModal();
+            renderAll();
+        }
+
+        // ========== EXPORT ==========
+        async function exportRecordings() {
+            if (recordings.length === 0 && corrections.length === 0) {
+                alert('Nothing to export');
+                return;
+            }
+
+            const zip = new JSZip();
+
+            const metadata = {
+                speaker: speakerInfo,
+                consent: {
+                    tosAccepted: consentInfo.tosAccepted,
+                    tosAcceptedDate: consentInfo.tosAcceptedDate,
+                    allowPublicStories: consentInfo.allowPublicStories
+                },
+                exportDate: new Date().toISOString(),
+                totalRecordings: recordings.length,
+                totalCorrections: corrections.length,
+                categoryProgress,
+                recordings: recordings.map(r => ({
+                    id: r.id, type: r.type, hmong: r.hmong, english: r.english,
+                    category: r.category, recordingType: r.recordingType, title: r.title,
+                    duration: r.duration, timestamp: r.timestamp, filename: `${r.id}.webm`,
+                    allowPublic: r.type === 'story' || r.type === 'reading' || r.type === 'free' ? consentInfo.allowPublicStories : true
+                })),
+                corrections
+            };
+
+            zip.file('metadata.json', JSON.stringify(metadata, null, 2));
+
+            const audioFolder = zip.folder('audio');
+            for (const rec of recordings) {
+                audioFolder.file(`${rec.id}.webm`, rec.audioBlob);
+            }
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(content);
+            a.download = `hmong_recordings_${speakerInfo.speakerId}_${Date.now()}.zip`;
+            a.click();
+        }
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Check if recording modal is open
+                if (!document.getElementById('recording-modal').classList.contains('hidden')) {
+                    // If in edit or flag view, go back to recording view
+                    if (!document.getElementById('edit-view').classList.contains('hidden') ||
+                        !document.getElementById('flag-view').classList.contains('hidden')) {
+                        showRecordingView();
+                    } else {
+                        // Otherwise close the recording modal
+                        closeRecording();
+                    }
+                } else if (!document.getElementById('event-modal').classList.contains('hidden')) {
+                    hideEventModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

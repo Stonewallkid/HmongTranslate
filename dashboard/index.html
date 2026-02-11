@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hmong Translation Project - Dashboard</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: var(--text);
+            color: white;
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h1 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+        }
+
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .stat-card.success .stat-value { color: var(--success); }
+        .stat-card.warning .stat-value { color: var(--warning); }
+        .stat-card.danger .stat-value { color: var(--danger); }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: var(--border);
+            border-radius: 4px;
+            height: 8px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .progress-fill.success { background: var(--success); }
+        .progress-fill.warning { background: var(--warning); }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Buttons */
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Checklist */
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: #f8fafc;
+        }
+
+        .checklist-item.completed {
+            background: #f0fdf4;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .checklist-title {
+            font-weight: 500;
+        }
+
+        .checklist-item.completed .checklist-title {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .checklist-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Calendar */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .calendar-day {
+            background: white;
+            padding: 0.5rem;
+            min-height: 80px;
+            font-size: 0.875rem;
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-light);
+            background: #f8fafc;
+        }
+
+        .calendar-day.today {
+            background: #eff6ff;
+        }
+
+        .calendar-date {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .calendar-event {
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .calendar-event.deadline {
+            background: #fef2f2;
+            color: var(--danger);
+        }
+
+        .calendar-event.session {
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        .calendar-event.reminder {
+            background: #fefce8;
+            color: var(--warning);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        /* Notifications */
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .notification-icon.deadline {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .notification-icon.reminder {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .notification-icon.success {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 500;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Phrase corrections list */
+        .correction-item {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .correction-original {
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .correction-new {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .correction-meta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* Calendar navigation */
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav h3 {
+            margin: 0;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <h1>Hmong Translation</h1>
+            <p class="sidebar-subtitle">Project Dashboard</p>
+
+            <a class="nav-item active" onclick="showPage('overview')">Overview</a>
+            <a class="nav-item" onclick="showPage('checklist')">Checklist</a>
+            <a class="nav-item" onclick="showPage('speakers')">Speakers</a>
+            <a class="nav-item" onclick="showPage('sessions')">Sessions</a>
+            <a class="nav-item" onclick="showPage('calendar')">Calendar</a>
+            <a class="nav-item" onclick="showPage('corrections')">Phrase Corrections</a>
+            <a class="nav-item" onclick="showPage('settings')">Settings</a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Overview Page -->
+            <div id="overview-page" class="page active">
+                <h2 style="margin-bottom: 1.5rem;">Project Overview</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-speakers">0</div>
+                        <div class="stat-label">Speakers Enrolled</div>
+                        <div class="progress-bar"><div class="progress-fill" id="progress-speakers" style="width: 0%"></div></div>
+                        <div class="stat-label">Goal: 25</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value" id="stat-recordings">0</div>
+                        <div class="stat-label">Total Recordings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-hours">0</div>
+                        <div class="stat-label">Hours Recorded</div>
+                        <div class="progress-bar"><div class="progress-fill success" id="progress-hours" style="width: 0%"></div></div>
+                        <div class="stat-label">Goal: 125 hrs</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" id="stat-corrections">0</div>
+                        <div class="stat-label">Phrase Corrections</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h2>Upcoming Deadlines</h2>
+                        <div id="upcoming-deadlines">
+                            <div class="empty-state">No upcoming deadlines</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Recent Activity</h2>
+                        <div id="recent-activity">
+                            <div class="empty-state">No recent activity</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="showPage('speakers'); showAddSpeakerModal();">+ Add Speaker</button>
+                        <button class="btn-secondary" onclick="showPage('sessions'); showAddSessionModal();">+ Log Session</button>
+                        <button class="btn-secondary" onclick="showPage('calendar'); showAddEventModal();">+ Add Calendar Event</button>
+                        <button class="btn-secondary" onclick="exportAllData();">Export All Data</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checklist Page -->
+            <div id="checklist-page" class="page">
+                <h2 style="margin-bottom: 1.5rem;">Project Checklist</h2>
+
+                <div class="card">
+                    <h3>Phase 1: Preparation</h3>
+                    <div id="checklist-prep"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Phase 2: Recruiting</h3>
+                    <div id="checklist-recruit"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Phase 3: Recording</h3>
+                    <div id="checklist-recording"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Phase 4: Transcription & Processing</h3>
+                    <div id="checklist-transcription"></div>
+                </div>
+            </div>
+
+            <!-- Speakers Page -->
+            <div id="speakers-page" class="page">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>Speakers</h2>
+                    <button class="btn-primary" onclick="showAddSpeakerModal()">+ Add Speaker</button>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Dialect</th>
+                                <th>Sessions</th>
+                                <th>Recordings</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="speakers-table">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sessions Page -->
+            <div id="sessions-page" class="page">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>Recording Sessions</h2>
+                    <button class="btn-primary" onclick="showAddSessionModal()">+ Log Session</button>
+                </div>
+
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Speaker</th>
+                                <th>Session #</th>
+                                <th>Categories</th>
+                                <th>Recordings</th>
+                                <th>Duration</th>
+                                <th>Quality</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-table">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Calendar Page -->
+            <div id="calendar-page" class="page">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>Calendar</h2>
+                    <button class="btn-primary" onclick="showAddEventModal()">+ Add Event</button>
+                </div>
+
+                <div class="card">
+                    <div class="calendar-nav">
+                        <button class="btn-secondary" onclick="prevMonth()">&lt; Previous</button>
+                        <h3 id="calendar-month-label"></h3>
+                        <button class="btn-secondary" onclick="nextMonth()">Next &gt;</button>
+                    </div>
+                    <div class="calendar" id="calendar-grid">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Upcoming Events</h3>
+                    <div id="upcoming-events"></div>
+                </div>
+            </div>
+
+            <!-- Corrections Page -->
+            <div id="corrections-page" class="page">
+                <h2 style="margin-bottom: 1.5rem;">Phrase Corrections</h2>
+
+                <div class="card">
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Speakers can flag or edit phrases they believe are incorrect.
+                        Review these corrections and approve or reject them.
+                    </p>
+
+                    <div id="corrections-list">
+                        <div class="empty-state">No corrections submitted yet</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Import Corrections from Recording Tool</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Upload a metadata.json file from a speaker's export to import their phrase corrections.
+                    </p>
+                    <input type="file" id="corrections-file" accept=".json" onchange="importCorrections(event)">
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings-page" class="page">
+                <h2 style="margin-bottom: 1.5rem;">Settings</h2>
+
+                <div class="card">
+                    <h3>Project Information</h3>
+                    <div class="form-group">
+                        <label>Project Name</label>
+                        <input type="text" id="setting-project-name" value="Hmong Translation Project">
+                    </div>
+                    <div class="form-group">
+                        <label>Coordinator Name</label>
+                        <input type="text" id="setting-coordinator-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Coordinator Email</label>
+                        <input type="email" id="setting-coordinator-email">
+                    </div>
+                    <div class="form-group">
+                        <label>Coordinator Phone</label>
+                        <input type="tel" id="setting-coordinator-phone">
+                    </div>
+                    <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+                </div>
+
+                <div class="card">
+                    <h3>Data Management</h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn-secondary" onclick="exportAllData()">Export All Data</button>
+                        <button class="btn-secondary" onclick="document.getElementById('import-file').click()">Import Data</button>
+                        <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
+                        <button class="btn-danger" onclick="clearAllData()">Clear All Data</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Notification Settings</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="setting-notifications" checked>
+                            Enable browser notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Reminder days before deadline</label>
+                        <select id="setting-reminder-days">
+                            <option value="1">1 day</option>
+                            <option value="3" selected>3 days</option>
+                            <option value="7">7 days</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Speaker Modal -->
+    <div class="modal-overlay hidden" id="speaker-modal">
+        <div class="modal">
+            <h2>Add New Speaker</h2>
+            <div class="form-group">
+                <label>Speaker ID *</label>
+                <input type="text" id="speaker-id" placeholder="speaker_001">
+            </div>
+            <div class="form-group">
+                <label>Name *</label>
+                <input type="text" id="speaker-name">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="speaker-email">
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="speaker-phone">
+            </div>
+            <div class="form-group">
+                <label>Dialect *</label>
+                <select id="speaker-dialect">
+                    <option value="white_hmong">White Hmong (Hmong Daw)</option>
+                    <option value="green_hmong">Green Hmong (Mong Leng)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Origin</label>
+                <input type="text" id="speaker-origin" placeholder="Laos, Thailand, etc.">
+            </div>
+            <div class="form-group">
+                <label>Age Range</label>
+                <select id="speaker-age">
+                    <option value="">Select...</option>
+                    <option value="18-25">18-25</option>
+                    <option value="26-35">26-35</option>
+                    <option value="36-45">36-45</option>
+                    <option value="46-55">46-55</option>
+                    <option value="56-65">56-65</option>
+                    <option value="65+">65+</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="speaker-consent">
+                    Consent form signed
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="hideModal('speaker-modal')">Cancel</button>
+                <button class="btn-primary" onclick="saveSpeaker()">Save Speaker</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Session Modal -->
+    <div class="modal-overlay hidden" id="session-modal">
+        <div class="modal">
+            <h2>Log Recording Session</h2>
+            <div class="form-group">
+                <label>Speaker *</label>
+                <select id="session-speaker"></select>
+            </div>
+            <div class="form-group">
+                <label>Date *</label>
+                <input type="date" id="session-date">
+            </div>
+            <div class="form-group">
+                <label>Session Number *</label>
+                <select id="session-number">
+                    <option value="1">Session 1 - Everyday Phrases</option>
+                    <option value="2">Session 2 - Medical Phrases</option>
+                    <option value="3">Session 3 - Emergency/Legal/Numbers</option>
+                    <option value="4">Session 4 - Free Recording (Stories)</option>
+                    <option value="5">Session 5 - Free Recording (Conversation)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Categories Completed</label>
+                <input type="text" id="session-categories" placeholder="greetings, family, questions">
+            </div>
+            <div class="form-group">
+                <label>Number of Recordings</label>
+                <input type="number" id="session-recordings" value="0">
+            </div>
+            <div class="form-group">
+                <label>Duration (minutes)</label>
+                <input type="number" id="session-duration" value="0">
+            </div>
+            <div class="form-group">
+                <label>Quality Rating</label>
+                <select id="session-quality">
+                    <option value="5">5 - Excellent</option>
+                    <option value="4">4 - Good</option>
+                    <option value="3">3 - Acceptable</option>
+                    <option value="2">2 - Poor</option>
+                    <option value="1">1 - Unusable</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="session-notes" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="hideModal('session-modal')">Cancel</button>
+                <button class="btn-primary" onclick="saveSession()">Save Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal-overlay hidden" id="event-modal">
+        <div class="modal">
+            <h2>Add Calendar Event</h2>
+            <div class="form-group">
+                <label>Event Type *</label>
+                <select id="event-type">
+                    <option value="deadline">Deadline</option>
+                    <option value="session">Recording Session</option>
+                    <option value="reminder">Reminder</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Title *</label>
+                <input type="text" id="event-title">
+            </div>
+            <div class="form-group">
+                <label>Date *</label>
+                <input type="date" id="event-date">
+            </div>
+            <div class="form-group">
+                <label>Speaker (optional)</label>
+                <select id="event-speaker">
+                    <option value="">None</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="event-notes" rows="2"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="hideModal('event-modal')">Cancel</button>
+                <button class="btn-primary" onclick="saveEvent()">Save Event</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Store
+        let data = {
+            settings: {
+                projectName: 'Hmong Translation Project',
+                coordinatorName: '',
+                coordinatorEmail: '',
+                coordinatorPhone: '',
+                notifications: true,
+                reminderDays: 3
+            },
+            speakers: [],
+            sessions: [],
+            events: [],
+            corrections: [],
+            checklist: {
+                prep: [
+                    { id: 'prep-1', title: 'Finalize recording tool', done: false },
+                    { id: 'prep-2', title: 'Test recording tool on multiple browsers', done: false },
+                    { id: 'prep-3', title: 'Set up cloud storage for files', done: false },
+                    { id: 'prep-4', title: 'Create speaker tracking spreadsheet', done: false },
+                    { id: 'prep-5', title: 'Prepare consent forms', done: false },
+                    { id: 'prep-6', title: 'Finalize speaker instructions', done: false },
+                    { id: 'prep-7', title: 'Have native speaker review phrase list', done: false },
+                    { id: 'prep-8', title: 'Set up communication channel (email/chat)', done: false }
+                ],
+                recruit: [
+                    { id: 'recruit-1', title: 'Identify potential speakers', done: false },
+                    { id: 'recruit-2', title: 'Reach out to community contacts', done: false },
+                    { id: 'recruit-3', title: 'Recruit 5 pilot speakers', done: false },
+                    { id: 'recruit-4', title: 'Complete pilot testing', done: false },
+                    { id: 'recruit-5', title: 'Recruit remaining 20 speakers', done: false },
+                    { id: 'recruit-6', title: 'All consent forms signed', done: false },
+                    { id: 'recruit-7', title: 'All speakers onboarded', done: false }
+                ],
+                recording: [
+                    { id: 'record-1', title: '25% of recordings complete', done: false },
+                    { id: 'record-2', title: '50% of recordings complete', done: false },
+                    { id: 'record-3', title: '75% of recordings complete', done: false },
+                    { id: 'record-4', title: '100% of recordings complete', done: false },
+                    { id: 'record-5', title: 'All files collected and organized', done: false },
+                    { id: 'record-6', title: 'Quality review complete', done: false }
+                ],
+                transcription: [
+                    { id: 'trans-1', title: 'Transcription guidelines distributed', done: false },
+                    { id: 'trans-2', title: '25% of transcriptions complete', done: false },
+                    { id: 'trans-3', title: '50% of transcriptions complete', done: false },
+                    { id: 'trans-4', title: '100% of transcriptions complete', done: false },
+                    { id: 'trans-5', title: 'Cross-verification complete', done: false },
+                    { id: 'trans-6', title: 'Data ready for model training', done: false }
+                ]
+            },
+            activity: []
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('hmong-dashboard-data');
+            if (saved) {
+                data = JSON.parse(saved);
+            }
+            render();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('hmong-dashboard-data', JSON.stringify(data));
+        }
+
+        // Page navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(pageId + '-page').classList.add('active');
+            event.target.classList.add('active');
+
+            if (pageId === 'calendar') {
+                renderCalendar();
+            }
+        }
+
+        // Modal helpers
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function showAddSpeakerModal() {
+            const nextId = data.speakers.length + 1;
+            document.getElementById('speaker-id').value = `speaker_${String(nextId).padStart(3, '0')}`;
+            showModal('speaker-modal');
+        }
+
+        function showAddSessionModal() {
+            populateSpeakerDropdowns();
+            document.getElementById('session-date').value = new Date().toISOString().split('T')[0];
+            showModal('session-modal');
+        }
+
+        function showAddEventModal() {
+            populateSpeakerDropdowns();
+            document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
+            showModal('event-modal');
+        }
+
+        // Populate speaker dropdowns
+        function populateSpeakerDropdowns() {
+            const selects = ['session-speaker', 'event-speaker'];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                const currentValue = select.value;
+                select.innerHTML = id === 'event-speaker' ? '<option value="">None</option>' : '';
+                data.speakers.forEach(s => {
+                    select.innerHTML += `<option value="${s.id}">${s.id} - ${s.name}</option>`;
+                });
+                select.value = currentValue;
+            });
+        }
+
+        // Save functions
+        function saveSpeaker() {
+            const speaker = {
+                id: document.getElementById('speaker-id').value,
+                name: document.getElementById('speaker-name').value,
+                email: document.getElementById('speaker-email').value,
+                phone: document.getElementById('speaker-phone').value,
+                dialect: document.getElementById('speaker-dialect').value,
+                origin: document.getElementById('speaker-origin').value,
+                ageRange: document.getElementById('speaker-age').value,
+                consent: document.getElementById('speaker-consent').checked,
+                sessionsComplete: 0,
+                totalRecordings: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!speaker.id || !speaker.name) {
+                alert('Please fill in required fields');
+                return;
+            }
+
+            data.speakers.push(speaker);
+            addActivity(`Added speaker: ${speaker.name}`);
+            saveData();
+            render();
+            hideModal('speaker-modal');
+        }
+
+        function saveSession() {
+            const session = {
+                id: Date.now().toString(),
+                speakerId: document.getElementById('session-speaker').value,
+                date: document.getElementById('session-date').value,
+                sessionNumber: parseInt(document.getElementById('session-number').value),
+                categories: document.getElementById('session-categories').value,
+                recordings: parseInt(document.getElementById('session-recordings').value),
+                duration: parseInt(document.getElementById('session-duration').value),
+                quality: parseInt(document.getElementById('session-quality').value),
+                notes: document.getElementById('session-notes').value,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!session.speakerId || !session.date) {
+                alert('Please fill in required fields');
+                return;
+            }
+
+            data.sessions.push(session);
+
+            // Update speaker stats
+            const speaker = data.speakers.find(s => s.id === session.speakerId);
+            if (speaker) {
+                speaker.sessionsComplete = Math.max(speaker.sessionsComplete, session.sessionNumber);
+                speaker.totalRecordings += session.recordings;
+            }
+
+            addActivity(`Logged session ${session.sessionNumber} for ${session.speakerId}`);
+            saveData();
+            render();
+            hideModal('session-modal');
+        }
+
+        function saveEvent() {
+            const event = {
+                id: Date.now().toString(),
+                type: document.getElementById('event-type').value,
+                title: document.getElementById('event-title').value,
+                date: document.getElementById('event-date').value,
+                speakerId: document.getElementById('event-speaker').value,
+                notes: document.getElementById('event-notes').value,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!event.title || !event.date) {
+                alert('Please fill in required fields');
+                return;
+            }
+
+            data.events.push(event);
+            addActivity(`Added event: ${event.title}`);
+            saveData();
+            render();
+            hideModal('event-modal');
+        }
+
+        function addActivity(message) {
+            data.activity.unshift({
+                message,
+                timestamp: new Date().toISOString()
+            });
+            if (data.activity.length > 50) {
+                data.activity = data.activity.slice(0, 50);
+            }
+        }
+
+        // Checklist functions
+        function toggleChecklist(phase, id) {
+            const item = data.checklist[phase].find(i => i.id === id);
+            if (item) {
+                item.done = !item.done;
+                addActivity(`${item.done ? 'Completed' : 'Uncompleted'}: ${item.title}`);
+                saveData();
+                render();
+            }
+        }
+
+        // Render functions
+        function render() {
+            renderStats();
+            renderChecklist();
+            renderSpeakers();
+            renderSessions();
+            renderCorrections();
+            renderUpcoming();
+            renderActivity();
+            loadSettings();
+        }
+
+        function renderStats() {
+            const totalSpeakers = data.speakers.length;
+            const totalRecordings = data.sessions.reduce((sum, s) => sum + s.recordings, 0);
+            const totalMinutes = data.sessions.reduce((sum, s) => sum + s.duration, 0);
+            const totalHours = (totalMinutes / 60).toFixed(1);
+            const totalCorrections = data.corrections.length;
+
+            document.getElementById('stat-speakers').textContent = totalSpeakers;
+            document.getElementById('stat-recordings').textContent = totalRecordings;
+            document.getElementById('stat-hours').textContent = totalHours;
+            document.getElementById('stat-corrections').textContent = totalCorrections;
+
+            document.getElementById('progress-speakers').style.width = `${(totalSpeakers / 25) * 100}%`;
+            document.getElementById('progress-hours').style.width = `${(totalHours / 125) * 100}%`;
+        }
+
+        function renderChecklist() {
+            ['prep', 'recruit', 'recording', 'transcription'].forEach(phase => {
+                const container = document.getElementById(`checklist-${phase}`);
+                container.innerHTML = data.checklist[phase].map(item => `
+                    <div class="checklist-item ${item.done ? 'completed' : ''}">
+                        <input type="checkbox" ${item.done ? 'checked' : ''}
+                               onchange="toggleChecklist('${phase}', '${item.id}')">
+                        <div class="checklist-content">
+                            <div class="checklist-title">${item.title}</div>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function renderSpeakers() {
+            const tbody = document.getElementById('speakers-table');
+            if (data.speakers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-light);">No speakers yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.speakers.map(s => {
+                const status = s.sessionsComplete >= 5 ? 'success' : (s.sessionsComplete > 0 ? 'warning' : 'info');
+                const statusText = s.sessionsComplete >= 5 ? 'Complete' : (s.sessionsComplete > 0 ? 'In Progress' : 'Not Started');
+                return `
+                    <tr>
+                        <td>${s.id}</td>
+                        <td>${s.name}</td>
+                        <td>${s.dialect === 'white_hmong' ? 'White' : 'Green'}</td>
+                        <td>${s.sessionsComplete}/5</td>
+                        <td>${s.totalRecordings}</td>
+                        <td><span class="badge badge-${status}">${statusText}</span></td>
+                        <td>
+                            <button class="btn-sm btn-secondary" onclick="editSpeaker('${s.id}')">Edit</button>
+                            <button class="btn-sm btn-danger" onclick="deleteSpeaker('${s.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderSessions() {
+            const tbody = document.getElementById('sessions-table');
+            if (data.sessions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-light);">No sessions logged yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.sessions.sort((a, b) => new Date(b.date) - new Date(a.date)).map(s => `
+                <tr>
+                    <td>${s.date}</td>
+                    <td>${s.speakerId}</td>
+                    <td>${s.sessionNumber}</td>
+                    <td>${s.categories || '-'}</td>
+                    <td>${s.recordings}</td>
+                    <td>${s.duration} min</td>
+                    <td>${'★'.repeat(s.quality)}${'☆'.repeat(5 - s.quality)}</td>
+                    <td>
+                        <button class="btn-sm btn-danger" onclick="deleteSession('${s.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderCorrections() {
+            const container = document.getElementById('corrections-list');
+            if (data.corrections.length === 0) {
+                container.innerHTML = '<div class="empty-state">No corrections submitted yet</div>';
+                return;
+            }
+
+            container.innerHTML = data.corrections.map((c, idx) => `
+                <div class="correction-item">
+                    <div><strong>Phrase ID:</strong> ${c.phraseId}</div>
+                    <div><span class="correction-original">${c.originalHmong}</span> → <span class="correction-new">${c.newHmong}</span></div>
+                    <div><span class="correction-original">${c.originalEnglish}</span> → <span class="correction-new">${c.newEnglish}</span></div>
+                    <div class="correction-meta">
+                        Submitted by: ${c.speakerId} | ${new Date(c.timestamp).toLocaleDateString()}
+                        ${c.reason ? `| Reason: ${c.reason}` : ''}
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <button class="btn-sm btn-success" onclick="approveCorrection(${idx})">Approve</button>
+                        <button class="btn-sm btn-danger" onclick="rejectCorrection(${idx})">Reject</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderUpcoming() {
+            const container = document.getElementById('upcoming-deadlines');
+            const today = new Date();
+            const upcoming = data.events
+                .filter(e => new Date(e.date) >= today)
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .slice(0, 5);
+
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="empty-state">No upcoming deadlines</div>';
+                return;
+            }
+
+            container.innerHTML = upcoming.map(e => `
+                <div class="notification-item">
+                    <div class="notification-icon ${e.type}">${e.type === 'deadline' ? '!' : e.type === 'session' ? '●' : '○'}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${e.title}</div>
+                        <div class="notification-time">${e.date}${e.speakerId ? ` - ${e.speakerId}` : ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderActivity() {
+            const container = document.getElementById('recent-activity');
+            if (data.activity.length === 0) {
+                container.innerHTML = '<div class="empty-state">No recent activity</div>';
+                return;
+            }
+
+            container.innerHTML = data.activity.slice(0, 10).map(a => `
+                <div class="notification-item">
+                    <div class="notification-content">
+                        <div class="notification-title">${a.message}</div>
+                        <div class="notification-time">${new Date(a.timestamp).toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Calendar
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const label = document.getElementById('calendar-month-label');
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            label.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+
+            let html = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                .map(d => `<div class="calendar-header">${d}</div>`).join('');
+
+            // Previous month days
+            const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+            for (let i = firstDay - 1; i >= 0; i--) {
+                html += `<div class="calendar-day other-month"><div class="calendar-date">${prevMonthDays - i}</div></div>`;
+            }
+
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = today.getFullYear() === currentYear &&
+                               today.getMonth() === currentMonth &&
+                               today.getDate() === day;
+
+                const dayEvents = data.events.filter(e => e.date === dateStr);
+                const eventsHtml = dayEvents.map(e =>
+                    `<div class="calendar-event ${e.type}">${e.title}</div>`
+                ).join('');
+
+                html += `<div class="calendar-day ${isToday ? 'today' : ''}">
+                    <div class="calendar-date">${day}</div>
+                    ${eventsHtml}
+                </div>`;
+            }
+
+            // Next month days
+            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+            const remaining = totalCells - (firstDay + daysInMonth);
+            for (let i = 1; i <= remaining; i++) {
+                html += `<div class="calendar-day other-month"><div class="calendar-date">${i}</div></div>`;
+            }
+
+            grid.innerHTML = html;
+
+            // Render upcoming events
+            renderUpcomingEvents();
+        }
+
+        function renderUpcomingEvents() {
+            const container = document.getElementById('upcoming-events');
+            const today = new Date().toISOString().split('T')[0];
+            const upcoming = data.events
+                .filter(e => e.date >= today)
+                .sort((a, b) => a.date.localeCompare(b.date))
+                .slice(0, 10);
+
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="empty-state">No upcoming events</div>';
+                return;
+            }
+
+            container.innerHTML = upcoming.map(e => `
+                <div class="notification-item">
+                    <div class="notification-icon ${e.type}">${e.type === 'deadline' ? '!' : e.type === 'session' ? '●' : '○'}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${e.title}</div>
+                        <div class="notification-time">${e.date}${e.speakerId ? ` - ${e.speakerId}` : ''}</div>
+                    </div>
+                    <button class="btn-sm btn-danger" onclick="deleteEvent('${e.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        // Delete functions
+        function deleteSpeaker(id) {
+            if (confirm('Delete this speaker?')) {
+                data.speakers = data.speakers.filter(s => s.id !== id);
+                saveData();
+                render();
+            }
+        }
+
+        function deleteSession(id) {
+            if (confirm('Delete this session?')) {
+                data.sessions = data.sessions.filter(s => s.id !== id);
+                saveData();
+                render();
+            }
+        }
+
+        function deleteEvent(id) {
+            if (confirm('Delete this event?')) {
+                data.events = data.events.filter(e => e.id !== id);
+                saveData();
+                render();
+            }
+        }
+
+        // Corrections
+        function importCorrections(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const metadata = JSON.parse(e.target.result);
+                    if (metadata.corrections && metadata.corrections.length > 0) {
+                        metadata.corrections.forEach(c => {
+                            c.speakerId = metadata.speaker?.speakerId || 'unknown';
+                        });
+                        data.corrections.push(...metadata.corrections);
+                        addActivity(`Imported ${metadata.corrections.length} corrections`);
+                        saveData();
+                        render();
+                        alert(`Imported ${metadata.corrections.length} corrections`);
+                    } else {
+                        alert('No corrections found in this file');
+                    }
+                } catch (err) {
+                    alert('Error reading file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function approveCorrection(idx) {
+            const correction = data.corrections[idx];
+            addActivity(`Approved correction for ${correction.phraseId}`);
+            data.corrections.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        function rejectCorrection(idx) {
+            const correction = data.corrections[idx];
+            addActivity(`Rejected correction for ${correction.phraseId}`);
+            data.corrections.splice(idx, 1);
+            saveData();
+            render();
+        }
+
+        // Settings
+        function loadSettings() {
+            document.getElementById('setting-project-name').value = data.settings.projectName || '';
+            document.getElementById('setting-coordinator-name').value = data.settings.coordinatorName || '';
+            document.getElementById('setting-coordinator-email').value = data.settings.coordinatorEmail || '';
+            document.getElementById('setting-coordinator-phone').value = data.settings.coordinatorPhone || '';
+            document.getElementById('setting-notifications').checked = data.settings.notifications !== false;
+            document.getElementById('setting-reminder-days').value = data.settings.reminderDays || 3;
+        }
+
+        function saveSettings() {
+            data.settings = {
+                projectName: document.getElementById('setting-project-name').value,
+                coordinatorName: document.getElementById('setting-coordinator-name').value,
+                coordinatorEmail: document.getElementById('setting-coordinator-email').value,
+                coordinatorPhone: document.getElementById('setting-coordinator-phone').value,
+                notifications: document.getElementById('setting-notifications').checked,
+                reminderDays: parseInt(document.getElementById('setting-reminder-days').value)
+            };
+            saveData();
+            alert('Settings saved!');
+        }
+
+        // Export/Import
+        function exportAllData() {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hmong-project-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    data = JSON.parse(e.target.result);
+                    saveData();
+                    render();
+                    alert('Data imported successfully!');
+                } catch (err) {
+                    alert('Error reading file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete ALL data? This cannot be undone.')) {
+                if (confirm('Really delete everything?')) {
+                    localStorage.removeItem('hmong-dashboard-data');
+                    location.reload();
+                }
+            }
+        }
+
+        // Check for notifications
+        function checkNotifications() {
+            if (!data.settings.notifications) return;
+
+            const today = new Date();
+            const reminderDate = new Date();
+            reminderDate.setDate(today.getDate() + data.settings.reminderDays);
+
+            data.events.forEach(event => {
+                const eventDate = new Date(event.date);
+                if (eventDate <= reminderDate && eventDate >= today) {
+                    if (Notification.permission === 'granted') {
+                        new Notification(`Upcoming: ${event.title}`, {
+                            body: `Due: ${event.date}`,
+                            icon: '📅'
+                        });
+                    }
+                }
+            });
+        }
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+
+        // Initialize
+        loadData();
+
+        // Check notifications every hour
+        setInterval(checkNotifications, 3600000);
+    </script>
+</body>
+</html>

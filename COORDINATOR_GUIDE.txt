@@ -1,0 +1,546 @@
+================================================================================
+                    HMONG TRANSLATION PROJECT
+                      COORDINATOR GUIDE
+================================================================================
+
+This guide is for project coordinators managing data collection from speakers.
+
+
+================================================================================
+SECTION 1: PROJECT OVERVIEW
+================================================================================
+
+GOAL
+----
+Collect parallel Hmong-English data to train a real-time translation system.
+
+TARGET DATA
+-----------
+- 25 speakers
+- 5 hours per speaker = 125 total hours
+- Mix of structured phrases and free speech
+- White Hmong (Hmong Daw) primary, Green Hmong tracked separately
+
+DATA TYPES
+----------
+1. PHRASE RECORDINGS (structured)
+   - Speaker reads Hmong phrases from the app
+   - English translation already provided
+   - ~475 phrases per speaker (1.5-2 hours)
+
+2. FREE RECORDINGS (unstructured)
+   - Personal stories
+   - Conversations
+   - Descriptions of daily activities
+   - ~3 hours per speaker
+
+3. TRANSCRIPTIONS
+   - Speakers transcribe their own recordings
+   - Cross-verification by other speakers
+
+
+================================================================================
+SECTION 2: BEFORE RECRUITING
+================================================================================
+
+CHECKLIST: MATERIALS READY
+--------------------------
+[ ] Recording tool tested and working
+[ ] Consent forms printed or ready for digital signature
+[ ] Speaker instructions document finalized
+[ ] File storage set up (Google Drive, Dropbox, etc.)
+[ ] Speaker tracking spreadsheet created
+[ ] Communication channel established (email list, group chat, etc.)
+[ ] Coordinator contact info added to all documents
+
+CHECKLIST: TECHNICAL SETUP
+--------------------------
+[ ] Test recording tool on multiple browsers (Chrome, Firefox, Safari)
+[ ] Test export/download function
+[ ] Test file upload to your storage system
+[ ] Verify audio quality from different devices
+[ ] Create folder structure for incoming data
+
+
+================================================================================
+SECTION 3: RECRUITING SPEAKERS
+================================================================================
+
+IDEAL SPEAKER PROFILE
+---------------------
+- Native Hmong speaker (White Hmong preferred, Green Hmong tracked)
+- Clear speech, no significant speech impediments
+- Access to computer with microphone
+- Basic computer literacy
+- Willing to commit 5+ hours over multiple sessions
+- Mix of ages (18-65+) for voice diversity
+- Mix of genders for voice diversity
+
+INFORMATION TO COLLECT FROM EACH SPEAKER
+----------------------------------------
+- Full name
+- Preferred contact method (email/phone)
+- Dialect (White Hmong / Green Hmong)
+- Region of origin (Laos, Thailand, Vietnam, USA-born)
+- Current location (City, State)
+- Age range
+- Gender (for voice diversity tracking)
+- Available times for recording
+- Equipment (built-in mic, external mic, phone)
+
+SPEAKER DIVERSITY GOALS
+-----------------------
+Try to recruit a balanced mix:
+
+Age Distribution:
+[ ] 3-5 speakers aged 18-35
+[ ] 3-5 speakers aged 36-50
+[ ] 3-5 speakers aged 51-65
+[ ] 3-5 speakers aged 65+
+
+Gender Distribution:
+[ ] 10-15 male speakers
+[ ] 10-15 female speakers
+
+Origin Distribution:
+[ ] Speakers from Laos
+[ ] Speakers from Thailand
+[ ] Speakers born in USA
+[ ] Other regions
+
+
+================================================================================
+SECTION 4: ONBOARDING SPEAKERS
+================================================================================
+
+ONBOARDING CHECKLIST (per speaker)
+----------------------------------
+[ ] Explain project purpose and how their data will be used
+[ ] Review and sign consent form
+[ ] Assign Speaker ID (format: speaker_001, speaker_002, etc.)
+[ ] Send speaker instructions document
+[ ] Send link to recording tool (or provide the HTML file)
+[ ] Schedule first recording session or set deadline
+[ ] Add to communication channel
+[ ] Record speaker metadata in tracking spreadsheet
+
+SPEAKER ID FORMAT
+-----------------
+Use consistent IDs: speaker_001, speaker_002, ... speaker_025
+
+This ID will be used in:
+- All audio filenames
+- Metadata files
+- Tracking spreadsheets
+- Communication
+
+
+================================================================================
+SECTION 5: MANAGING RECORDING SESSIONS
+================================================================================
+
+RECOMMENDED SESSION STRUCTURE
+-----------------------------
+Break the 5 hours into manageable sessions:
+
+SESSION 1: Orientation + Phrases (1.5 hours)
+- 15 min: Test equipment, practice recording
+- 75 min: Record Everyday phrases (greetings, family, questions, etc.)
+
+SESSION 2: Medical Phrases (1 hour)
+- Record all Medical category phrases
+
+SESSION 3: Emergency + Legal + Numbers (1 hour)
+- Record remaining structured phrases
+
+SESSION 4: Free Recording - Stories (1 hour)
+- Personal story (childhood memory, immigration story, etc.)
+- Description of typical day
+- How to cook a traditional dish
+
+SESSION 5: Free Recording - Conversations (1 hour)
+- Paired conversation with another speaker (if possible)
+- Or: Extended monologue on a topic of choice
+- Translation task: Translate 20-30 English sentences to Hmong
+
+QUALITY CHECKPOINTS
+-------------------
+After Session 1:
+[ ] Review sample recordings for audio quality
+[ ] Check that exports are working correctly
+[ ] Verify file naming is correct
+[ ] Give feedback to speaker if needed
+
+After Session 3:
+[ ] Confirm all structured phrases completed
+[ ] Check completion rate (should be 90%+)
+[ ] Note any phrases speaker couldn't record (dialect differences, etc.)
+
+After Session 5:
+[ ] All recordings exported and submitted
+[ ] Free recordings have transcriptions (or scheduled for later)
+[ ] Thank speaker and provide any compensation
+
+
+================================================================================
+SECTION 6: DATA COLLECTION & ORGANIZATION
+================================================================================
+
+FOLDER STRUCTURE
+----------------
+Create this structure in your cloud storage:
+
+hmong-project-data/
+├── raw-recordings/
+│   ├── speaker_001/
+│   │   ├── session_1_phrases_2024-01-15.zip
+│   │   ├── session_2_medical_2024-01-17.zip
+│   │   └── ...
+│   ├── speaker_002/
+│   └── ...
+├── processed/
+│   ├── phrases/
+│   │   ├── speaker_001/
+│   │   └── ...
+│   └── free/
+│       ├── speaker_001/
+│       └── ...
+├── transcriptions/
+│   ├── speaker_001/
+│   └── ...
+├── metadata/
+│   ├── speakers.csv
+│   ├── sessions.csv
+│   └── quality-notes.csv
+└── documents/
+    ├── consent-forms/
+    └── instructions/
+
+FILE NAMING CONVENTION
+----------------------
+The recording tool automatically names files. Expected format:
+  {speaker_id}_{category}_{subcategory}_{index}_{timestamp}.webm
+
+Example:
+  speaker_001_everyday_greetings_0_1705334400000.webm
+
+METADATA TO TRACK
+-----------------
+For each recording session, log:
+- Speaker ID
+- Session number
+- Date/time
+- Duration (minutes)
+- Number of recordings
+- Categories completed
+- Any issues noted
+- Quality rating (1-5)
+
+
+================================================================================
+SECTION 7: QUALITY CONTROL
+================================================================================
+
+AUDIO QUALITY CHECKLIST
+-----------------------
+When reviewing recordings, check:
+
+[ ] Volume level appropriate (not too quiet, not clipping)
+[ ] No significant background noise
+[ ] No echo/reverb
+[ ] Speech is clear and understandable
+[ ] No cut-off words at start/end
+[ ] Consistent microphone distance
+
+COMMON ISSUES AND SOLUTIONS
+---------------------------
+Issue: Recording too quiet
+Solution: Speaker should move closer to mic or speak louder
+
+Issue: Background noise (TV, traffic, etc.)
+Solution: Find quieter room, record at different time
+
+Issue: Echo/reverb
+Solution: Record in room with soft surfaces (carpet, curtains)
+
+Issue: Words cut off
+Solution: Wait 1 second before/after speaking
+
+Issue: Inconsistent volume
+Solution: Maintain same distance from microphone
+
+QUALITY RATING SCALE
+--------------------
+5 = Excellent: Clean audio, clear speech, no issues
+4 = Good: Minor background noise but speech clear
+3 = Acceptable: Some issues but usable for training
+2 = Poor: Significant issues, may need re-recording
+1 = Unusable: Must re-record
+
+RE-RECORDING POLICY
+-------------------
+- Quality 1-2: Must re-record
+- Quality 3: Usable but flag for review
+- Quality 4-5: Accept as-is
+
+
+================================================================================
+SECTION 8: TRANSCRIPTION WORKFLOW
+================================================================================
+
+TRANSCRIPTION PHASES
+--------------------
+Phase 1: Self-transcription
+- Speakers transcribe their own phrase recordings (verify accuracy)
+- Speakers transcribe their own free recordings
+
+Phase 2: Cross-verification
+- Different speaker verifies transcription accuracy
+- Note any disagreements or dialect variations
+
+Phase 3: Translation
+- Hmong free recordings get English translations
+- English prompts get Hmong translations
+
+TRANSCRIPTION GUIDELINES FOR SPEAKERS
+-------------------------------------
+1. Write exactly what was said (including mistakes, restarts)
+2. Use standard Hmong orthography (RPA - Romanized Popular Alphabet)
+3. Mark unclear sections with [unclear]
+4. Note any code-switching with [English: word]
+5. Include timestamps for long recordings
+
+TRACKING TRANSCRIPTIONS
+-----------------------
+Create a spreadsheet with columns:
+- Recording ID
+- Speaker ID (original speaker)
+- Transcriber ID
+- Transcription status (not started / in progress / complete)
+- Verification status (not started / in progress / verified)
+- Translation status (not started / in progress / complete)
+- Notes
+
+
+================================================================================
+SECTION 9: SPEAKER COMMUNICATION
+================================================================================
+
+COMMUNICATION TEMPLATES
+-----------------------
+
+WELCOME EMAIL:
+Subject: Welcome to the Hmong Translation Project
+
+Dear [Name],
+
+Thank you for volunteering to help build Hmong translation technology!
+
+Your Speaker ID is: [speaker_XXX]
+
+Please find attached:
+1. Consent form (please sign and return)
+2. Speaker instructions
+3. Recording tool (index.html file)
+
+Your first recording session is scheduled for: [DATE/TIME]
+Or please complete your first session by: [DEADLINE]
+
+If you have any questions, please contact me at [EMAIL/PHONE].
+
+Ua tsaug ntau!
+[Your name]
+
+---
+
+REMINDER EMAIL:
+Subject: Reminder: Recording session [X] due [DATE]
+
+Dear [Name],
+
+This is a friendly reminder that your Session [X] recordings are due by [DATE].
+
+In this session, please complete:
+- [Category 1] phrases
+- [Category 2] phrases
+
+After recording, please:
+1. Click "Review & Export"
+2. Download the ZIP file
+3. Upload to [LOCATION] or email to [EMAIL]
+
+Let me know if you have any questions!
+
+[Your name]
+
+---
+
+THANK YOU EMAIL:
+Subject: Thank you for completing your recordings!
+
+Dear [Name],
+
+Thank you for completing all your recording sessions!
+
+Your contribution of [X] recordings ([X] minutes of audio) will help build
+technology that serves the Hmong community.
+
+[If applicable: Your compensation of $XX will be sent via [METHOD].]
+
+We may contact you in the future for:
+- Transcription verification
+- Additional recordings
+- Project updates
+
+Ua tsaug ntau for your valuable contribution!
+
+[Your name]
+
+
+================================================================================
+SECTION 10: TIMELINE & MILESTONES
+================================================================================
+
+SUGGESTED TIMELINE
+------------------
+Week 1-2: Preparation
+- Finalize all materials
+- Set up storage and tracking
+- Test everything
+
+Week 3-4: Recruiting
+- Recruit 25 speakers
+- Complete onboarding
+- Sign consent forms
+
+Week 5-12: Recording (8 weeks)
+- Each speaker completes 5 sessions
+- Stagger start dates to manage workload
+- Weekly check-ins with active speakers
+
+Week 13-16: Transcription
+- Speakers transcribe their recordings
+- Cross-verification begins
+
+Week 17+: Data Processing
+- Organize all data
+- Quality review
+- Prepare for model training
+
+MILESTONES
+----------
+[ ] All materials finalized
+[ ] 10 speakers recruited
+[ ] 25 speakers recruited
+[ ] First speaker completes all sessions
+[ ] 50% of recordings complete
+[ ] 100% of recordings complete
+[ ] 50% of transcriptions complete
+[ ] 100% of transcriptions complete
+[ ] Data ready for training
+
+
+================================================================================
+SECTION 11: TROUBLESHOOTING
+================================================================================
+
+TECHNICAL ISSUES
+----------------
+Problem: Recording tool won't open
+Solution: Try different browser (Chrome recommended)
+
+Problem: Microphone not detected
+Solution: Check browser permissions, try different browser
+
+Problem: Export fails
+Solution: Check browser allows downloads, try different browser
+
+Problem: File upload fails
+Solution: Check file size limits, try compressing or splitting
+
+SPEAKER ISSUES
+--------------
+Problem: Speaker can't find time
+Solution: Offer flexible deadlines, break into smaller sessions
+
+Problem: Speaker struggling with technology
+Solution: Offer video call walkthrough, simplify instructions
+
+Problem: Poor audio quality despite efforts
+Solution: Consider in-person recording session if possible
+
+Problem: Speaker drops out
+Solution: Recruit replacement, salvage any completed recordings
+
+
+================================================================================
+SECTION 12: COMPENSATION (if applicable)
+================================================================================
+
+If offering compensation, document clearly:
+
+COMPENSATION STRUCTURE
+----------------------
+Option A: Per-hour rate
+- $XX per hour of recording
+- Estimated 5 hours = $XXX per speaker
+
+Option B: Per-session rate
+- $XX per completed session
+- 5 sessions = $XXX per speaker
+
+Option C: Completion bonus
+- $XXX upon completing all sessions and transcriptions
+
+PAYMENT TRACKING
+----------------
+Track in spreadsheet:
+- Speaker ID
+- Sessions completed
+- Amount earned
+- Payment method
+- Payment date
+- Payment confirmed
+
+
+================================================================================
+SECTION 13: LEGAL & ETHICAL CONSIDERATIONS
+================================================================================
+
+DATA PRIVACY
+------------
+- Store consent forms securely
+- Don't share speaker personal info
+- Use Speaker IDs in all data files (not names)
+- Inform speakers how data will be used
+- Allow speakers to withdraw within specified period
+
+ATTRIBUTION
+-----------
+- Decide if speakers will be credited by name or anonymous
+- Document preference in consent form
+- Keep record of preferences
+
+DATA RETENTION
+--------------
+- Specify how long data will be kept
+- Explain who will have access
+- Document in consent form
+
+
+================================================================================
+CONTACT INFORMATION
+================================================================================
+
+Project Coordinator: _________________________________
+
+Email: _________________________________
+
+Phone: _________________________________
+
+Emergency Contact: _________________________________
+
+
+================================================================================
+                         END OF COORDINATOR GUIDE
+================================================================================

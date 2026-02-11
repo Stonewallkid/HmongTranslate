@@ -1,0 +1,153 @@
+================================================================================
+               HMONG TRANSLATION PROJECT - SPEAKER INSTRUCTIONS
+================================================================================
+
+Thank you for volunteering to help build Hmong translation technology!
+These instructions will help you record high-quality audio at home.
+
+
+BEFORE YOU START
+================================================================================
+
+1. EQUIPMENT NEEDED
+   - Computer with a microphone (built-in or external)
+   - Chrome, Firefox, or Safari web browser
+   - Quiet room
+
+2. FIND A QUIET SPACE
+   - Turn off TV, radio, fans, air conditioning if possible
+   - Close windows to reduce outside noise
+   - Choose a room with carpet/curtains (less echo)
+   - Let family members know you'll be recording
+
+3. TEST YOUR MICROPHONE
+   - Make sure your browser can access your microphone
+   - When you first click "Start" recording, your browser will ask permission
+   - Click "Allow" to grant microphone access
+
+
+RECORDING TIPS
+================================================================================
+
+1. SPEAK CLEARLY
+   - Use your normal speaking voice
+   - Don't speak too fast or too slow
+   - Pronounce words clearly but naturally
+
+2. CONSISTENT DISTANCE
+   - Keep the same distance from the microphone throughout
+   - About 6-12 inches (15-30 cm) is ideal
+   - Don't move around while recording
+
+3. WAIT BEFORE SPEAKING
+   - After clicking "Start", wait 1 second before speaking
+   - After finishing, wait 1 second before clicking "Stop"
+   - This gives clean audio without cut-off words
+
+4. IF YOU MAKE A MISTAKE
+   - Click "Re-record" to try again
+   - It's okay to pause and restart
+   - Quality is more important than speed
+
+5. TAKE BREAKS
+   - Recording for 1-1.5 hours at a time is enough
+   - Rest your voice between sessions
+   - Stay hydrated!
+
+
+HOW TO USE THE RECORDING TOOL
+================================================================================
+
+1. OPEN THE TOOL
+   - Double-click "index.html" in the recording-tool folder
+   - Or open your browser and drag the file into it
+
+2. ENTER YOUR INFORMATION
+   - Fill out your name and details
+   - Select "White Hmong" or "Green Hmong" dialect
+   - Click "Start Recording Session"
+
+3. PHRASE RECORDING (Main Tab)
+   - Click a category (Everyday, Medical, etc.)
+   - You'll see a Hmong phrase and its English meaning
+   - Click the red "Start" button to begin recording
+   - Read the Hmong phrase clearly
+   - Click "Stop" when finished
+   - Listen to your recording with the play button
+   - Click "Save & Next" if it sounds good
+   - Click "Re-record" if you want to try again
+   - Click "Skip" if you don't know the phrase
+
+4. FREE RECORDING (Second Tab)
+   - Use this for stories, conversations, or other content
+   - Select the type of recording
+   - Give it a title
+   - Record yourself speaking
+   - Add the Hmong text and English translation if possible
+   - Click "Save Recording"
+
+5. EXPORT YOUR RECORDINGS (Third Tab)
+   - When you're done for the day, go to "Review & Export"
+   - Click "Download All Recordings"
+   - A ZIP file will be saved to your computer
+   - Send this file to the project coordinator
+
+
+SESSION GOALS
+================================================================================
+
+Try to complete these over multiple sessions:
+
+SESSION 1 (1-1.5 hours)
+- All "Greetings" phrases
+- All "Questions" phrases
+- All "Numbers" phrases
+
+SESSION 2 (1-1.5 hours)
+- All "Medical - Body Parts"
+- All "Medical - Symptoms"
+- All "Medical - Doctor Questions"
+
+SESSION 3 (1-1.5 hours)
+- All "Daily Activities"
+- All "Food & Drink"
+- All "Shopping"
+
+SESSION 4 (1 hour)
+- Tell a personal story (5-10 minutes)
+- Describe your typical day (5 minutes)
+- Free conversation with family member (10-15 minutes)
+
+
+TROUBLESHOOTING
+================================================================================
+
+PROBLEM: Browser asks for microphone but nothing happens
+SOLUTION: Make sure you clicked "Allow". Try refreshing the page.
+
+PROBLEM: Recording has too much background noise
+SOLUTION: Find a quieter room. Close windows. Turn off fans/AC.
+
+PROBLEM: Recording sounds too quiet
+SOLUTION: Move closer to the microphone. Speak slightly louder.
+
+PROBLEM: Recording sounds echoy
+SOLUTION: Move to a room with carpet, curtains, or soft furniture.
+
+PROBLEM: Can't export/download recordings
+SOLUTION: Make sure you're using a modern browser (Chrome, Firefox, Safari).
+          Try a different browser if one doesn't work.
+
+
+QUESTIONS?
+================================================================================
+
+Contact the project coordinator:
+Name: _______________________
+Email: _______________________
+Phone: _______________________
+
+
+================================================================================
+                         UA TSAUG! THANK YOU!
+================================================================================

@@ -1,0 +1,90 @@
+================================================================================
+                    HMONG TRANSLATION PROJECT
+                       CONSENT FORM
+================================================================================
+
+PARTICIPANT INFORMATION
+-----------------------
+Name: _______________________________________
+Date: _______________________________________
+Speaker ID: _________________________________
+
+
+PURPOSE OF THE PROJECT
+-----------------------
+This project collects Hmong speech recordings and translations to develop
+technology that can translate between Hmong and English. Your recordings
+will be used to train artificial intelligence (AI) systems for:
+
+- Speech recognition (understanding spoken Hmong)
+- Machine translation (translating Hmong to English and English to Hmong)
+- Text-to-speech (computer-generated Hmong speech)
+
+
+WHAT YOU WILL DO
+-----------------------
+- Record yourself speaking Hmong phrases
+- Read prepared phrases and sentences
+- Tell stories or have conversations in Hmong
+- Provide English translations where applicable
+- Review and verify transcriptions (optional)
+
+
+HOW YOUR DATA WILL BE USED
+-----------------------
+[ ] I consent to my voice recordings being used to train AI translation systems
+
+[ ] I consent to my voice being used to create synthetic (computer-generated)
+    Hmong speech that may sound like me
+
+[ ] I consent to my recordings being shared with researchers and developers
+    working on Hmong language technology
+
+[ ] I wish to remain anonymous (no name attached to recordings)
+    OR
+[ ] I consent to being credited by name as a contributor to this project
+
+
+DATA RETENTION
+-----------------------
+Your recordings will be:
+- Stored securely on encrypted servers
+- Retained indefinitely for ongoing research and development
+- Potentially shared with academic institutions and non-profit organizations
+  working on Hmong language preservation
+
+
+YOUR RIGHTS
+-----------------------
+- You may stop participating at any time
+- You may request deletion of your recordings within 30 days of recording
+- You may request a copy of your recordings
+- You may ask questions about how your data is being used at any time
+
+
+CONTACT INFORMATION
+-----------------------
+Project Coordinator: _______________________________________
+Email: _______________________________________
+Phone: _______________________________________
+
+
+SIGNATURE
+-----------------------
+I have read and understood this consent form. I voluntarily agree to participate
+in this project under the terms described above.
+
+
+Signature: _______________________________________
+
+Date: _______________________________________
+
+
+Witness (if applicable): _______________________________________
+
+Date: _______________________________________
+
+
+================================================================================
+                    PLEASE KEEP A COPY FOR YOUR RECORDS
+================================================================================
