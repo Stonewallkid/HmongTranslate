@@ -788,6 +788,69 @@
             }
         }
 
+        /* Admin Mode */
+        .admin-phrase-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .admin-phrase-card.edited {
+            border-color: var(--warning);
+            background: #fffbeb;
+        }
+
+        .admin-phrase-card .phrase-number {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-phrase-card .phrase-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .admin-phrase-card .phrase-field label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-phrase-card input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .admin-phrase-card input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .admin-phrase-card .phrase-actions {
+            margin-top: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .admin-phrase-card .edited-badge {
+            display: inline-block;
+            background: var(--warning);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+        }
+
         /* Hidden */
         .hidden {
             display: none !important;
@@ -947,7 +1010,100 @@
             <button class="btn-secondary" onclick="showTOS()" style="width: 100%; margin-top: 0.5rem;">
                 Review Terms of Service
             </button>
+
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                <button class="btn-secondary btn-sm" onclick="showAdminLogin()" style="opacity: 0.6;">
+                    Admin Login
+                </button>
+            </div>
         </div>
+    </div>
+
+    <!-- Admin Login -->
+    <div id="admin-login" class="setup-screen hidden">
+        <div class="setup-card" style="max-width: 400px;">
+            <h1>Admin Access</h1>
+            <p class="setup-subtitle">Enter admin code to edit phrases</p>
+
+            <div class="form-group">
+                <label for="admin-code">Admin Code</label>
+                <input type="password" id="admin-code" placeholder="Enter code">
+            </div>
+
+            <button class="btn-primary" onclick="verifyAdminCode()" style="width: 100%;">
+                Login as Admin
+            </button>
+
+            <button class="btn-secondary" onclick="hideAdminLogin()" style="width: 100%; margin-top: 0.5rem;">
+                Back
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="app hidden">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Phrase Editor</h1>
+                <div class="sidebar-subtitle">Admin Mode</div>
+                <div class="speaker-badge" style="background: var(--danger);">
+                    <strong>ADMIN</strong>
+                    <span id="admin-edit-count">0 edits</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Categories</div>
+                <div id="admin-category-nav"></div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Actions</div>
+                <a class="nav-item" onclick="exportEditedPhrases()">
+                    <span>Export Phrases</span>
+                </a>
+                <a class="nav-item" onclick="exitAdminMode()">
+                    <span>Exit Admin</span>
+                </a>
+            </div>
+        </div>
+
+        <main class="main">
+            <div class="page-header">
+                <h2 id="admin-category-title">Select a Category</h2>
+                <p id="admin-category-subtitle">Click a category on the left to edit phrases</p>
+            </div>
+
+            <div id="admin-search" class="card" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" id="admin-search-input" placeholder="Search phrases..." oninput="filterAdminPhrases()">
+                </div>
+            </div>
+
+            <div id="admin-phrases-list"></div>
+
+            <div id="admin-stats" class="card">
+                <h3>Phrase Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="admin-total-phrases">475</div>
+                        <div class="stat-label">Total Phrases</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" id="admin-edited-phrases">0</div>
+                        <div class="stat-label">Edited</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Domains</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">30</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <!-- Main App -->
@@ -2532,6 +2688,286 @@
             a.download = `hmong_recordings_${speakerInfo.speakerId}_${Date.now()}.zip`;
             a.click();
         }
+
+        // ========== ADMIN MODE ==========
+        const ADMIN_CODE = '1985';
+        let isAdminMode = false;
+        let phraseEdits = {}; // Store edits: { "everyday_greetings_0": { hmong: "...", english: "..." } }
+        let currentAdminCategory = null;
+
+        function showAdminLogin() {
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('admin-login').classList.remove('hidden');
+            document.getElementById('admin-code').value = '';
+            document.getElementById('admin-code').focus();
+        }
+
+        function hideAdminLogin() {
+            document.getElementById('admin-login').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+
+        function verifyAdminCode() {
+            const code = document.getElementById('admin-code').value;
+            if (code === ADMIN_CODE) {
+                enterAdminMode();
+            } else {
+                alert('Invalid admin code');
+                document.getElementById('admin-code').value = '';
+            }
+        }
+
+        function enterAdminMode() {
+            isAdminMode = true;
+
+            // Load any saved edits
+            const savedEdits = localStorage.getItem('hmong-phrase-edits');
+            if (savedEdits) {
+                phraseEdits = JSON.parse(savedEdits);
+            }
+
+            document.getElementById('admin-login').classList.add('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+
+            renderAdminCategoryNav();
+            updateAdminStats();
+        }
+
+        function exitAdminMode() {
+            if (Object.keys(phraseEdits).length > 0) {
+                if (!confirm('You have unsaved edits. Export them before leaving?\n\nClick OK to export first, or Cancel to exit without exporting.')) {
+                    // User wants to exit without exporting
+                } else {
+                    exportEditedPhrases();
+                    return;
+                }
+            }
+            isAdminMode = false;
+            document.getElementById('admin-panel').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+
+        function renderAdminCategoryNav() {
+            const nav = document.getElementById('admin-category-nav');
+            let html = '';
+
+            ['everyday', 'medical', 'emergency', 'legal', 'numbers'].forEach(domain => {
+                html += `<div style="margin-bottom: 0.5rem;">
+                    <div style="font-size: 0.7rem; color: var(--text-light); padding: 0.25rem 0.75rem; text-transform: uppercase;">${domain}</div>`;
+
+                if (phrases[domain]) {
+                    Object.keys(phrases[domain]).forEach(cat => {
+                        const editCount = countEditsInCategory(domain, cat);
+                        const displayName = cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        html += `<a class="nav-item ${currentAdminCategory === cat ? 'active' : ''}" onclick="showAdminCategory('${domain}', '${cat}')">
+                            <span>${displayName}</span>
+                            ${editCount > 0 ? `<span class="badge" style="background: var(--warning);">${editCount}</span>` : `<span class="badge">${phrases[domain][cat].length}</span>`}
+                        </a>`;
+                    });
+                }
+                html += '</div>';
+            });
+
+            nav.innerHTML = html;
+        }
+
+        function countEditsInCategory(domain, category) {
+            let count = 0;
+            const categoryPhrasesList = phrases[domain][category];
+            categoryPhrasesList.forEach((p, i) => {
+                const editKey = `${domain}_${category}_${i}`;
+                if (phraseEdits[editKey]) count++;
+            });
+            return count;
+        }
+
+        function showAdminCategory(domain, category) {
+            currentAdminCategory = category;
+            const categoryPhrases = phrases[domain][category];
+            const displayName = category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+            document.getElementById('admin-category-title').textContent = displayName;
+            document.getElementById('admin-category-subtitle').textContent = `${categoryPhrases.length} phrases in ${domain}`;
+            document.getElementById('admin-search').style.display = 'block';
+            document.getElementById('admin-stats').style.display = 'none';
+
+            renderAdminPhrases(domain, category);
+            renderAdminCategoryNav();
+        }
+
+        function renderAdminPhrases(domain, category, filter = '') {
+            const container = document.getElementById('admin-phrases-list');
+            const categoryPhrases = phrases[domain][category];
+
+            let html = '';
+            categoryPhrases.forEach((phrase, index) => {
+                const editKey = `${domain}_${category}_${index}`;
+                const edit = phraseEdits[editKey];
+                const currentHmong = edit?.hmong ?? phrase.hmong;
+                const currentEnglish = edit?.english ?? phrase.english;
+                const isEdited = !!edit;
+
+                // Filter
+                if (filter && !currentHmong.toLowerCase().includes(filter.toLowerCase()) &&
+                    !currentEnglish.toLowerCase().includes(filter.toLowerCase())) {
+                    return;
+                }
+
+                html += `
+                    <div class="admin-phrase-card ${isEdited ? 'edited' : ''}" data-key="${editKey}">
+                        <div class="phrase-number">
+                            #${index + 1}
+                            ${isEdited ? '<span class="edited-badge">EDITED</span>' : ''}
+                        </div>
+                        <div class="phrase-content">
+                            <div class="phrase-field">
+                                <label>Hmong</label>
+                                <input type="text" value="${escapeHtml(currentHmong)}"
+                                    data-field="hmong" data-key="${editKey}"
+                                    data-original="${escapeHtml(phrase.hmong)}"
+                                    onchange="updatePhraseEdit(this, '${domain}', '${category}', ${index})">
+                            </div>
+                            <div class="phrase-field">
+                                <label>English</label>
+                                <input type="text" value="${escapeHtml(currentEnglish)}"
+                                    data-field="english" data-key="${editKey}"
+                                    data-original="${escapeHtml(phrase.english)}"
+                                    onchange="updatePhraseEdit(this, '${domain}', '${category}', ${index})">
+                            </div>
+                        </div>
+                        ${isEdited ? `
+                        <div class="phrase-actions">
+                            <button class="btn-secondary btn-sm" onclick="revertPhraseEdit('${editKey}', '${domain}', '${category}')">Revert</button>
+                        </div>` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html || '<div class="card"><p style="color: var(--text-light);">No matching phrases</p></div>';
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function updatePhraseEdit(input, domain, category, index) {
+            const editKey = `${domain}_${category}_${index}`;
+            const field = input.dataset.field;
+            const original = input.dataset.original;
+            const newValue = input.value.trim();
+
+            if (!phraseEdits[editKey]) {
+                phraseEdits[editKey] = {
+                    hmong: phrases[domain][category][index].hmong,
+                    english: phrases[domain][category][index].english
+                };
+            }
+
+            phraseEdits[editKey][field] = newValue;
+
+            // Check if both fields are back to original
+            const originalPhrase = phrases[domain][category][index];
+            if (phraseEdits[editKey].hmong === originalPhrase.hmong &&
+                phraseEdits[editKey].english === originalPhrase.english) {
+                delete phraseEdits[editKey];
+            }
+
+            // Save to localStorage
+            localStorage.setItem('hmong-phrase-edits', JSON.stringify(phraseEdits));
+
+            // Re-render
+            renderAdminPhrases(domain, category, document.getElementById('admin-search-input').value);
+            renderAdminCategoryNav();
+            updateAdminStats();
+        }
+
+        function revertPhraseEdit(editKey, domain, category) {
+            delete phraseEdits[editKey];
+            localStorage.setItem('hmong-phrase-edits', JSON.stringify(phraseEdits));
+            renderAdminPhrases(domain, category, document.getElementById('admin-search-input').value);
+            renderAdminCategoryNav();
+            updateAdminStats();
+        }
+
+        function filterAdminPhrases() {
+            const filter = document.getElementById('admin-search-input').value;
+            // Find current domain from category
+            let currentDomain = null;
+            ['everyday', 'medical', 'emergency', 'legal', 'numbers'].forEach(domain => {
+                if (phrases[domain] && phrases[domain][currentAdminCategory]) {
+                    currentDomain = domain;
+                }
+            });
+            if (currentDomain) {
+                renderAdminPhrases(currentDomain, currentAdminCategory, filter);
+            }
+        }
+
+        function updateAdminStats() {
+            const editCount = Object.keys(phraseEdits).length;
+            document.getElementById('admin-edit-count').textContent = `${editCount} edit${editCount !== 1 ? 's' : ''}`;
+            document.getElementById('admin-edited-phrases').textContent = editCount;
+        }
+
+        function exportEditedPhrases() {
+            // Create a copy of phrases with edits applied
+            const editedPhrases = JSON.parse(JSON.stringify(phrases));
+
+            Object.keys(phraseEdits).forEach(editKey => {
+                const [domain, category, indexStr] = editKey.split('_');
+                const catKey = editKey.replace(`${domain}_`, '').replace(`_${indexStr}`, '');
+                const index = parseInt(indexStr);
+
+                // Handle category names with underscores
+                let actualCategory = null;
+                let actualIndex = null;
+                for (const cat of Object.keys(editedPhrases[domain])) {
+                    const testKey = `${domain}_${cat}_`;
+                    if (editKey.startsWith(testKey)) {
+                        const idx = parseInt(editKey.replace(testKey, ''));
+                        if (!isNaN(idx) && idx < editedPhrases[domain][cat].length) {
+                            actualCategory = cat;
+                            actualIndex = idx;
+                            break;
+                        }
+                    }
+                }
+
+                if (actualCategory !== null && actualIndex !== null) {
+                    editedPhrases[domain][actualCategory][actualIndex] = {
+                        hmong: phraseEdits[editKey].hmong,
+                        english: phraseEdits[editKey].english
+                    };
+                }
+            });
+
+            // Create export data
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                editCount: Object.keys(phraseEdits).length,
+                edits: phraseEdits,
+                phrases: editedPhrases
+            };
+
+            // Download as JSON
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `hmong_phrases_edited_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+
+            alert(`Exported ${Object.keys(phraseEdits).length} edited phrases!`);
+        }
+
+        // Handle Enter key in admin code field
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminCodeInput = document.getElementById('admin-code');
+            if (adminCodeInput) {
+                adminCodeInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') verifyAdminCode();
+                });
+            }
+        });
 
         // ========== KEYBOARD SHORTCUTS ==========
         document.addEventListener('keydown', function(e) {
